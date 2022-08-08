@@ -13,5 +13,8 @@ UCLASS()
 class VALORANTCLONE_API AValorantCloneGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	AValorantCloneGameModeBase();
 	
 };
