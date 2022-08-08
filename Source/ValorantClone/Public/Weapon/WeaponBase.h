@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ArrowComponent.h"
 #include "Components/SceneComponent.h"
 #include "WeaponBase.generated.h"
 
+class UStaticMeshComponent;
+class UArrowComponent; 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( Abstract, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VALORANTCLONE_API UWeaponBase : public USceneComponent
 {
 	GENERATED_BODY()
@@ -20,9 +23,15 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent * WeaponMesh;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UArrowComponent * Arrow;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> Projectile;
+	
+	void Fire () {};  
 		
 };
