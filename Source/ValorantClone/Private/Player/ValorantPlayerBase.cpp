@@ -3,19 +3,51 @@
 
 #include "Player/ValorantPlayerBase.h"
 
+#include "WeaponInterface.h"
+#include "Components/ChildActorComponent.h"
+#include "Components/StaticMeshComponent.h"
+
 // Sets default values
 AValorantPlayerBase::AValorantPlayerBase()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH")); 
+	  
+
+	Weapon = CreateDefaultSubobject<UChildActorComponent>(TEXT("WEAPON"));
+	Weapon->SetupAttachment(CharacterMesh); 
 }
 
-// Called to bind functionality to input
-void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+void AValorantPlayerBase::Shoot()
+{
+	if (Weapon->GetClass() == nullptr) return;
+	
+	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");
+
+	if (Weapon == nullptr) return;
+	//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, LaserWeapon->GetChildActor()->GetName());
+	
+	if (Weapon->GetChildActorClass()->ImplementsInterface(UWeaponInterface::StaticClass()))
+	{
+		IWeaponInterface::Execute_Fire( Weapon->GetChildActor());    
+	}
+	
+	
+}
+
+void AValorantPlayerBase::TakeDamage_Implementation(const float& InDamage)
+{
+	IDamagingInterface::TakeDamage_Implementation(InDamage);
+
+	Health -= InDamage;
+
+	if (Health <= 0)
+	{
+		Destroy(); 
+	}
 }
 
 // Called when the game starts or when spawned
@@ -25,12 +57,6 @@ void AValorantPlayerBase::BeginPlay()
 	
 }
 
-// Called every frame
-void AValorantPlayerBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
 
 
 

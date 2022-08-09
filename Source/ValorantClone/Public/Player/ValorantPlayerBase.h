@@ -3,11 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DamagingInterface.h"
 #include "GameFramework/Character.h"
 #include "ValorantPlayerBase.generated.h"
 
+class UStaticMeshComponent; 
+class UChildActorComponent; 
+
 UCLASS()
-class VALORANTCLONE_API AValorantPlayerBase : public ACharacter
+class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagingInterface
 {
 	GENERATED_BODY()
 
@@ -19,11 +23,22 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* CharacterMesh;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UChildActorComponent* Weapon;
+
+public:	
+
+	void Shoot();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
+	float Health = 100.0f;
+
+	
+	
+
+	virtual void TakeDamage_Implementation(const float& InDamage) override;
 
 };

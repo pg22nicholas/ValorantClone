@@ -8,21 +8,26 @@
 #include "WeaponBase.generated.h"
 
 class UStaticMeshComponent;
-class UArrowComponent; 
+class UArrowComponent;
+class USceneComponent;
 
 UCLASS( Abstract, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class VALORANTCLONE_API UWeaponBase : public USceneComponent
+class VALORANTCLONE_API AWeaponBase : public AActor  
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UWeaponBase();
+	AWeaponBase(); 
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneComponent* SceneComponent;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent * WeaponMesh;
 	
@@ -32,6 +37,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> Projectile;
 	
-	void Fire () {};  
+	
 		
 };

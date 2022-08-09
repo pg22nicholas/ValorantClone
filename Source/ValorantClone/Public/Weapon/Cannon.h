@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponInterface.h"
 #include "Weapon/WeaponBase.h"
 #include "Cannon.generated.h"
 
@@ -10,8 +11,13 @@
  * 
  */
 UCLASS()
-class VALORANTCLONE_API UCannon : public UWeaponBase
+class VALORANTCLONE_API ACannon : public AWeaponBase, public IWeaponInterface
 {
 	GENERATED_BODY()
-	
+
+protected:
+	ACannon();
+	virtual void BeginPlay() override;
+
+	virtual void Fire_Implementation() override;
 };

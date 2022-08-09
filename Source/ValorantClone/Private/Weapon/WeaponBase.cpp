@@ -4,29 +4,32 @@
 #include "Weapon/WeaponBase.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Components/SceneComponent.h"
 
 // Sets default values for this component's properties
-UWeaponBase::UWeaponBase()
+AWeaponBase::AWeaponBase()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = false;
 
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SCENE COMPONENT")); 
+	RootComponent = SceneComponent; 
+	
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
+	WeaponMesh->SetupAttachment(SceneComponent); 
 	
 	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("DIRECTION ARROW"));
 	Arrow->SetupAttachment(WeaponMesh);
 	// ...
 }
 
-
-// Called when the game starts
-void UWeaponBase::BeginPlay()
+void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
+
+
+
 
 
