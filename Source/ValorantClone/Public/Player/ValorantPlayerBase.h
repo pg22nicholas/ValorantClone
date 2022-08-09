@@ -7,7 +7,6 @@
 #include "GameFramework/Character.h"
 #include "ValorantPlayerBase.generated.h"
 
-class UStaticMeshComponent; 
 class UChildActorComponent; 
 
 UCLASS()
@@ -22,9 +21,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UStaticMeshComponent* CharacterMesh;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UChildActorComponent* Weapon;

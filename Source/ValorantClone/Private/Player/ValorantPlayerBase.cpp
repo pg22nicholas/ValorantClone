@@ -12,13 +12,11 @@ AValorantPlayerBase::AValorantPlayerBase()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
-	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH")); 
 	  
 
 	Weapon = CreateDefaultSubobject<UChildActorComponent>(TEXT("WEAPON"));
-	Weapon->SetupAttachment(CharacterMesh); 
-}
+	Weapon->SetupAttachment(RootComponent); 
+} 
 
 
 void AValorantPlayerBase::Shoot()
