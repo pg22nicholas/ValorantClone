@@ -10,12 +10,14 @@
  */
 UCLASS()
 class VALORANTCLONE_API ALineIndicator : public AGroundIndicator
-{
-	GENERATED_BODY()
+{GENERATED_BODY()
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Width = 1;
-	float Length = 100;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FVector2D LineDirection = FVector2D::ZeroVector;
 	
 };
