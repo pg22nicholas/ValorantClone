@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Nicholas Johnson 2022
 
 #pragma once
 
@@ -15,14 +15,41 @@ public:
 	// Sets default values for this actor's properties
 	AGroundIndicator();
 
+	DECLARE_DELEGATE(FCancelIndicatorSignature)
+	FCancelIndicatorSignature CancelIndicatorDelegate;
+
+	DECLARE_DELEGATE_OneParam(FEndIndicatorSignature, float)
+	FEndIndicatorSignature EndIndicatorDelegate;
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 	
-	virtual void PerformAttack() PURE_VIRTUAL(AGroundIndicator::PerformAttack,);
+	virtual void EndIndicator();
+	virtual void CancelIndicator();
+
+	void IndicatorReachedMax();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float Length = 3.f;
+
+	float CurrLength;
+ 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool IsCharging = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsAutomaticEndAtMaxLength = true;
+	  
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsChargeable = true;
+
+	FTimerHandle ChargeTimerHandle;
+
+	virtual void StartIndicator();
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void BeginPlay() override;
 
 };
