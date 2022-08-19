@@ -83,7 +83,7 @@ void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float D
 	}
 }
 
-void AValorantPlayerBase::Shoot()
+void AValorantPlayerBase::Shoot_Implementation()
 {
 	if (Weapon->GetClass() == nullptr) return;
 	
@@ -94,7 +94,7 @@ void AValorantPlayerBase::Shoot()
 	
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
-		weaponBase->SER_Fire(); 
+		weaponBase->Fire(); 
 	}
 }
 

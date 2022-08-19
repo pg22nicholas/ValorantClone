@@ -19,5 +19,5 @@ protected:
 	ACannon();
 	virtual void BeginPlay() override;
 
-	virtual void SER_Fire_Implementation() override;
+	virtual void Fire() override;
 };

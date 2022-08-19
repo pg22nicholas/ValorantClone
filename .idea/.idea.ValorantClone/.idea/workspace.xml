@@ -6,27 +6,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fae75055-1e4a-41f6-840e-fe8ded85cccf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_AK47.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_Bullet.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ValorantClone/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ValorantClone/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest_2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest_2.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_AK47.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_AK47.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_CannonWeapon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_CannonWeapon.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ExplosiveProjectile.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ExplosiveProjectile.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Level/LVL_Basic.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Level/LVL_Basic.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerControllerBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerControllerBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Projectile/Bullet.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Projectile/Bullet.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Projectile/ExplosiveProjectile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Projectile/ExplosiveProjectile.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/AK47.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/AK47.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/Cannon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/Cannon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/WeaponBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/WeaponBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Interfaces/DamagingInterface.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Interfaces/DamagingInterface.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Interfaces/WeaponInterface.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Interfaces/WeaponInterface.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Player/ValorantPlayerBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Player/ValorantPlayerBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Projectile/Bullet.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Projectile/Bullet.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Projectile/ExplosiveProjectile.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Projectile/ExplosiveProjectile.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/AK47.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/AK47.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/Cannon.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/Cannon.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/WeaponBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/WeaponBase.h" afterDir="false" />
@@ -44,14 +32,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C++ Project.ValorantClone">
     <configuration name="UE4" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -275,6 +263,7 @@
       <option name="presentableId" value="Default" />
       <updated>1660904260730</updated>
       <workItem from="1660904292078" duration="4594000" />
+      <workItem from="1660929671479" duration="7218000" />
     </task>
     <servers />
   </component>

@@ -16,7 +16,7 @@ void ACannon::BeginPlay()
 	
 }
 
-void ACannon::SER_Fire_Implementation()
+void ACannon::Fire()
 {
 	APawn* instigator = Cast<APawn>(GetParentActor());
 	if (!instigator) return;

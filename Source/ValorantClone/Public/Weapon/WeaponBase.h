@@ -20,15 +20,12 @@ public:
 	// Sets default values for this component's properties
 	AWeaponBase();
 
-	UFUNCTION(Server, Reliable)
-	virtual void SER_Fire();
-	virtual void SER_Fire_Implementation() PURE_VIRTUAL(AWeaponBase::SER_Fire(),);
+	virtual void Fire() PURE_VIRTUAL(AWeaponBase::FireLogic, );
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent* SceneComponent;
 	

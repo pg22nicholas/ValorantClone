@@ -64,6 +64,7 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void SetDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
+	UFUNCTION(Server, Reliable)
 	void Shoot();
 
 	/** Handles moving forward/backward */

@@ -12,7 +12,7 @@ void AAK47::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AAK47::SER_Fire_Implementation()
+void AAK47::Fire()
 {
 	APawn* instigator = Cast<APawn>( GetParentActor());
 	if (!instigator) return;
