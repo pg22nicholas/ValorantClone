@@ -3,3 +3,9 @@
 
 #include "player/ValorantPlayerStateBase.h"
 
+AValorantPlayerStateBase::AValorantPlayerStateBase()
+{
+	CurrHealth = Health;
+
+	PlayerType = PLAYABLE_CHARACTERS::PLAYER_1;
+}

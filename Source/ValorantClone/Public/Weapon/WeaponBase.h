@@ -3,26 +3,49 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ArrowComponent.h"
 #include "Components/SceneComponent.h"
 #include "WeaponBase.generated.h"
 
+class UStaticMeshComponent;
+class UArrowComponent;
+class USceneComponent;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class VALORANTCLONE_API UWeaponBase : public USceneComponent
+UCLASS( Abstract, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class VALORANTCLONE_API AWeaponBase : public AActor  
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UWeaponBase();
+	AWeaponBase();
+
+	virtual void Fire() PURE_VIRTUAL(AWeaponBase::FireLogic, );
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneComponent* SceneComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent * WeaponMesh;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UArrowComponent * Arrow;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> Projectile;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USceneComponent* Barrel;
+
+	// UFUNCTION(Server, Reliable)
+	// virtual void Reload();
+	//
+	// UFUNCTION(Server, Reliable) 
+	// virtual void AddMagazine();
+	
 		
 };
