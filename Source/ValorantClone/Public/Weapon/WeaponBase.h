@@ -18,7 +18,11 @@ class VALORANTCLONE_API AWeaponBase : public AActor
 
 public:	
 	// Sets default values for this component's properties
-	AWeaponBase(); 
+	AWeaponBase();
+
+	UFUNCTION(Server, Reliable)
+	virtual void SER_Fire();
+	virtual void SER_Fire_Implementation() PURE_VIRTUAL(AWeaponBase::SER_Fire(),);
 
 protected:
 	// Called when the game starts
@@ -36,7 +40,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> Projectile;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USceneComponent* Barrel;
+
+	// UFUNCTION(Server, Reliable)
+	// virtual void Reload();
+	//
+	// UFUNCTION(Server, Reliable) 
+	// virtual void AddMagazine();
 	
 		
 };

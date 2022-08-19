@@ -24,4 +24,6 @@ class VALORANTCLONE_API IDamagingInterface
 
 public:
 
+	// TODO: Get team
+
 };

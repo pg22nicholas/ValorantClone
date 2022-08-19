@@ -7,7 +7,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/ValorantPlayerStateBase.h"
+#include "Weapon/WeaponBase.h"
 
 // Sets default values
 AValorantPlayerBase::AValorantPlayerBase()
@@ -38,11 +40,19 @@ AValorantPlayerBase::AValorantPlayerBase()
 	Weapon->SetupAttachment(MeshArms);
 }
 
+
+
 // Called when the game starts or when spawned
 void AValorantPlayerBase::BeginPlay()
 {
 	Super::BeginPlay();
-	OnTakeAnyDamage.AddDynamic(this, &AValorantPlayerBase::TakeDamage);
+	OnTakeAnyDamage.AddDynamic(this, &AValorantPlayerBase::SetDamage);
+}
+
+void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AValorantPlayerBase, Health);
 }
 
 void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -62,7 +72,7 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 }
 
-void AValorantPlayerBase::TakeDamage_Implementation(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 	AController* InstigatedBy, AActor* DamageCauser)
 {
 	Health -= Damage;
@@ -82,9 +92,9 @@ void AValorantPlayerBase::Shoot()
 	if (Weapon == nullptr) return;
 	//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, LaserWeapon->GetChildActor()->GetName());
 	
-	if (Weapon->GetChildActorClass()->ImplementsInterface(UWeaponInterface::StaticClass()))
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
-		IWeaponInterface::Execute_Fire( Weapon->GetChildActor());    
+		weaponBase->SER_Fire(); 
 	}
 }
 

@@ -14,6 +14,7 @@ AExplosiveProjectile::AExplosiveProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = true;
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
 	RootComponent = ProjectileMesh;
@@ -34,46 +35,28 @@ void AExplosiveProjectile::BeginPlay()
 
 void AExplosiveProjectile::Explode()
 {
-	TArray<FHitResult> HitResults;
-
-	const FVector Start = GetActorLocation();
-	const FVector End = GetActorLocation();
-
-	const FCollisionShape ColShape = FCollisionShape::MakeSphere(ExplosionRadius);
-
-	const bool Hit = GetWorld()->SweepMultiByChannel(HitResults, 
-		Start,
-		End, FQuat::Identity, ECC_Visibility, ColShape); 
- 
-	DrawDebugSphere(GetWorld(), Start, ExplosionRadius, 50, FColor::Orange, false, 2.0f); 
-
-	if (Hit)
-	{
-		for (auto const HitResult : HitResults)  
-		{ 
-			//	GEngine->AddOnScreenDebugMessage(-1,10.0f,FColor::Orange,*HitResult.Actor->GetName());
-			
-			if (HitResult.Actor->GetClass()->ImplementsInterface(UDamagingInterface::StaticClass())) 
-			{
-				HitResult.GetActor()->TakeDamage(ExplosionDamage, FDamageEvent(), GetInstigator()->GetController(), GetInstigator());
-			}
-		}
-		Destroy();  
-	}
+	// TODO: Sound and VFX?
 }
 
-void AExplosiveProjectile::OnProjectileHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+void AExplosiveProjectile::OnProjectileHit_Implementation(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UWorld* world = GetWorld();
 	if (!world) return;
 
-	APawn* instigator = Cast<APawn>(GetInstigator());
+	APawn* instigator = GetInstigator();
 	if (!instigator) return;
+
+	AActor* owner = GetOwner();
+	if (!owner) return;
+
+	TArray<AActor*> ignoreActors;
+	ignoreActors.Add(instigator);
+	ignoreActors.Add(owner);
 	
 	if(OtherActor->GetClass()->ImplementsInterface(UDamagingInterface::StaticClass()))
 	{
 		UGameplayStatics::ApplyRadialDamage(world, HitDamage, Hit.Location,
-			ExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>(), instigator, instigator->GetController());
+			ExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>(), owner, instigator->GetController());
 	}
 	Explode(); 
 }

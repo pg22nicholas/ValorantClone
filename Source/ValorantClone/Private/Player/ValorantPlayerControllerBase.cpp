@@ -21,9 +21,9 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 	// TODO: use player state player type instead ***
 	TSubclassOf<AValorantPlayerBase> PlayerCharacter;
 	if (IsLocalController())
-		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_1);
-	else
 		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_2);
+	else
+		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_1);
 	
 	//TSubclassOf<AValorantPlayerBase> PlayerCharacter = GameMode->GetPlayerCharacterType(MyPlayerState->GetPlayerType());
 

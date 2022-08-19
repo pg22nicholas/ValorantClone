@@ -13,6 +13,7 @@ ABullet::ABullet()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = true;
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
 	RootComponent = ProjectileMesh;
@@ -29,17 +30,23 @@ void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
 	OnActorHit.AddDynamic(this,&ABullet::OnProjectileHit); 
-	
 }
 
-void ABullet::OnProjectileHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+void ABullet::OnProjectileHit_Implementation(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	APawn* instigator = Cast<APawn>(GetInstigator());
 	if (!instigator) return;
+
+	AActor* owner = GetOwner();
+	if (!owner) return;
+
+	TArray<AActor*> ignoreActors;
+	ignoreActors.Add(instigator);
+	//ignoreActors.Add(owner);
 	
 	if(OtherActor->GetClass()->ImplementsInterface(UDamagingInterface::StaticClass()))
 	{
-		UGameplayStatics::ApplyDamage(OtherActor, HitDamage, instigator->GetController(), instigator, UDamageType::StaticClass());
+		UGameplayStatics::ApplyDamage(OtherActor, HitDamage, instigator->GetController(), owner, UDamageType::StaticClass());
 	}
 	Destroy(); 
 }

@@ -19,6 +19,6 @@ protected:
 	AAK47(); 
 	virtual void BeginPlay() override;
 
-	virtual void Fire_Implementation() override;
+	virtual void SER_Fire_Implementation() override;
 };
 

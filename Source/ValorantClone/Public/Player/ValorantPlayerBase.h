@@ -54,16 +54,15 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-
 	
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite) 
 	float Health = 100.0f;
 
 protected:
 
 	UFUNCTION(Server, Reliable)
-	void TakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void SetDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	void Shoot();
 

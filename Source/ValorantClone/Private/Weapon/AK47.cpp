@@ -12,15 +12,18 @@ void AAK47::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AAK47::Fire_Implementation()
+void AAK47::SER_Fire_Implementation()
 {
-	APawn* instigator = Cast<APawn>(GetOwner());
+	APawn* instigator = Cast<APawn>( GetParentActor());
+	if (!instigator) return;
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "AK47 Shot");    
 
-	const FTransform SpawnTransform = GetTransform();  
+	FTransform SpawnTransform = GetTransform();
+	SpawnTransform.SetLocation(Barrel->GetComponentLocation());
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Instigator = instigator;
-	SpawnParams.Owner = instigator;
+	SpawnParams.Owner = this;
 	//	const FVector Location = GetActorLocation();
 	//	SpawnTransform.SetLocation({Location.X, Location.Y, Location.Z + 70});   
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, SpawnTransform.GetLocation().ToString()) ;    

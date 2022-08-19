@@ -7,6 +7,7 @@
 
 ACannon::ACannon()
 {
+	
 }
 
 void ACannon::BeginPlay()
@@ -15,13 +16,14 @@ void ACannon::BeginPlay()
 	
 }
 
-void ACannon::Fire_Implementation()
+void ACannon::SER_Fire_Implementation()
 {
-	APawn* instigator = Cast<APawn>(GetOwner());
+	APawn* instigator = Cast<APawn>(GetParentActor());
 	if (!instigator) return;
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");    
 
-	const FTransform SpawnTransform = GetTransform();  
+	FTransform SpawnTransform = GetTransform();
+	SpawnTransform.SetLocation(Barrel->GetComponentLocation());
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Instigator = instigator;
 	SpawnParams.Owner = instigator;

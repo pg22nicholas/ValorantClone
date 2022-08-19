@@ -28,7 +28,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Explode();
 
-	UFUNCTION()
+	UFUNCTION(Server, Reliable)
 	void OnProjectileHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit); 
 	
 protected:

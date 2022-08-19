@@ -21,7 +21,10 @@ AWeaponBase::AWeaponBase()
 	
 	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("DIRECTION ARROW"));
 	Arrow->SetupAttachment(WeaponMesh);
-	// ...
+
+	Barrel = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
+	Barrel->SetupAttachment(WeaponMesh);
+	
 }
 
 void AWeaponBase::BeginPlay()
