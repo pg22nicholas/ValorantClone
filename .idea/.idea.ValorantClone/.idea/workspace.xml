@@ -7,50 +7,34 @@
   <component name="ChangeListManager">
     <list default="true" id="15236bab-fbee-41ad-a877-43bb89c661fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ValorantClone/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ValorantClone/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPersonFire_Montage.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_AnimBP.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_Fire.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_Idle.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_JumpEnd.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_JumpLoop.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_JumpStart.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_Run.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Materials/M_UE4Man_Body.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Materials/MaterialLayers/ML_GlossyBlack_Latex_UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Materials/MaterialLayers/ML_Plastic_Shiny_Beige.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Materials/MaterialLayers/ML_Plastic_Shiny_Beige_LOGO.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Materials/MaterialLayers/ML_SoftMetal_UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Materials/MaterialLayers/T_ML_Aluminum01.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Materials/MaterialLayers/T_ML_Aluminum01_N.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Materials/MaterialLayers/T_ML_Rubber_Blue_01_D.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Materials/MaterialLayers/T_ML_Rubber_Blue_01_N.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Mesh/SK_Mannequin_Arms.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Mesh/SK_Mannequin_Arms_PhysicsAsset.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Mesh/SK_Mannequin_Arms_Skeleton.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Textures/UE4_LOGO_CARD.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Textures/UE4_Mannequin_MAT_MASKA.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Textures/UE4_Mannequin__normals.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Level/LVL_Basic.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Level/LVL_Basic.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/ValorantClone.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/ValorantClone.Build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/ValorantCloneGameModeBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/ValorantCloneGameModeBase.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Source/ValorantClone/Private/ValorantCloneGameState.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ValorantClone/Public/ValorantCloneGameState.h" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2DYBq8GNjXfRKWzQc6kqTWvN742" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C++ Project.ValorantClone">
     <configuration name="UE4" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -274,6 +258,7 @@
       <option name="presentableId" value="Default" />
       <updated>1660866325788</updated>
       <workItem from="1660866354422" duration="752000" />
+      <workItem from="1660869866849" duration="2550000" />
     </task>
     <servers />
   </component>

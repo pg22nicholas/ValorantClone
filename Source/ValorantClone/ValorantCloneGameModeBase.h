@@ -3,18 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "ValorantCloneGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class VALORANTCLONE_API AValorantCloneGameModeBase : public AGameModeBase
+class VALORANTCLONE_API AValorantCloneGameModeBase : public AGameMode
 {
 	GENERATED_BODY()
 
 public:
 	AValorantCloneGameModeBase();
+
+protected:
+	
+	
 	
 };
