@@ -27,7 +27,12 @@ AValorantPlayerBase::AValorantPlayerBase()
 	MeshArms->bCastDynamicShadow = false;			
 	MeshArms->CastShadow = false;
 	  
-
+	MeshBody = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshBody"));
+	MeshBody->SetOwnerNoSee(true);			
+	MeshBody->bCastDynamicShadow = true;			
+	MeshBody->CastShadow = true;
+	MeshBody->SetupAttachment(MeshArms);
+	
 	Weapon = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(MeshArms);
 }

@@ -17,8 +17,15 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 
 	AValorantPlayerStateBase* MyPlayerState = Cast<AValorantPlayerStateBase>(PlayerState);
 	if (!PlayerState) return;
+
+	// TODO: use player state player type instead ***
+	TSubclassOf<AValorantPlayerBase> PlayerCharacter;
+	if (IsLocalController())
+		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_1);
+	else
+		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_2);
 	
-	TSubclassOf<AValorantPlayerBase> PlayerCharacter = GameMode->GetPlayerCharacterType(MyPlayerState->GetPlayerType());
+	//TSubclassOf<AValorantPlayerBase> PlayerCharacter = GameMode->GetPlayerCharacterType(MyPlayerState->GetPlayerType());
 
 	FActorSpawnParameters spawnParams;
 	spawnParams.Owner = this;

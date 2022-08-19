@@ -22,6 +22,9 @@ class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagin
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	UCameraComponent* CameraComponent;
 
+	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
+	USkeletalMeshComponent* MeshBody;
+	
 	UPROPERTY(VisibleDefaultsOnly, Category=Weapon)
 	UChildActorComponent* Weapon;
 
