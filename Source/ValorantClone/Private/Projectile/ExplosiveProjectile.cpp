@@ -3,10 +3,11 @@
 
 #include "Projectile/ExplosiveProjectile.h"
 
-#include "DamagingInterface.h"
+#include "Interfaces/DamagingInterface.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AExplosiveProjectile::AExplosiveProjectile()
@@ -54,7 +55,7 @@ void AExplosiveProjectile::Explode()
 			
 			if (HitResult.Actor->GetClass()->ImplementsInterface(UDamagingInterface::StaticClass())) 
 			{
-				IDamagingInterface::Execute_TakeDamage( HitResult.GetActor(),ExplosionDamage);     
+				HitResult.GetActor()->TakeDamage(ExplosionDamage, FDamageEvent(), GetInstigator()->GetController(), GetInstigator());
 			}
 		}
 		Destroy();  
@@ -63,9 +64,16 @@ void AExplosiveProjectile::Explode()
 
 void AExplosiveProjectile::OnProjectileHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
+	UWorld* world = GetWorld();
+	if (!world) return;
+
+	APawn* instigator = Cast<APawn>(GetInstigator());
+	if (!instigator) return;
+	
 	if(OtherActor->GetClass()->ImplementsInterface(UDamagingInterface::StaticClass()))
 	{
-		IDamagingInterface::Execute_TakeDamage(OtherActor, HitDamage);   
+		UGameplayStatics::ApplyRadialDamage(world, HitDamage, Hit.Location,
+			ExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>(), instigator, instigator->GetController());
 	}
 	Explode(); 
 }

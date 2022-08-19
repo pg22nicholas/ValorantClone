@@ -38,6 +38,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(ClampMin = 0.0f, ClampMax = 100.0f))
 	float HitDamage = 2.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(ClampMin = 0.0f, ClampMax = 100.0f))
+	float MinExplosionDamage = 1.0f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(ClampMin = 0.0f, ClampMax = 1000.0f)) 
 	float ExplosionRadius = 500.0f;
 

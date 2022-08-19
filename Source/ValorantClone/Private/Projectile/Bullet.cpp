@@ -3,9 +3,10 @@
 
 #include "Projectile/Bullet.h"
 
-#include "DamagingInterface.h"
+#include "Interfaces/DamagingInterface.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABullet::ABullet()
@@ -33,9 +34,12 @@ void ABullet::BeginPlay()
 
 void ABullet::OnProjectileHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
+	APawn* instigator = Cast<APawn>(GetInstigator());
+	if (!instigator) return;
+	
 	if(OtherActor->GetClass()->ImplementsInterface(UDamagingInterface::StaticClass()))
 	{
-		IDamagingInterface::Execute_TakeDamage(OtherActor, HitDamage);   
+		UGameplayStatics::ApplyDamage(OtherActor, HitDamage, instigator->GetController(), instigator, UDamageType::StaticClass());
 	}
 	Destroy(); 
 }

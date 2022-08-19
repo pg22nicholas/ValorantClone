@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "WeaponInterface.h"
+#include "Interfaces/WeaponInterface.h"
 #include "Weapon/WeaponBase.h"
 #include "AK47.generated.h"
 

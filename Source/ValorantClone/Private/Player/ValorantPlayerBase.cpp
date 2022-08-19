@@ -3,10 +3,11 @@
 
 #include "Player/ValorantPlayerBase.h"
 
-#include "WeaponInterface.h"
+#include "Interfaces/WeaponInterface.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Player/ValorantPlayerStateBase.h"
 
 // Sets default values
 AValorantPlayerBase::AValorantPlayerBase()
@@ -41,7 +42,7 @@ AValorantPlayerBase::AValorantPlayerBase()
 void AValorantPlayerBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	OnTakeAnyDamage.AddDynamic(this, &AValorantPlayerBase::TakeDamage);
 }
 
 void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -61,6 +62,17 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 }
 
+void AValorantPlayerBase::TakeDamage_Implementation(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+	AController* InstigatedBy, AActor* DamageCauser)
+{
+	Health -= Damage;
+
+	if (Health <= 0)
+	{
+		Destroy(); 
+	}
+}
+
 void AValorantPlayerBase::Shoot()
 {
 	if (Weapon->GetClass() == nullptr) return;
@@ -73,18 +85,6 @@ void AValorantPlayerBase::Shoot()
 	if (Weapon->GetChildActorClass()->ImplementsInterface(UWeaponInterface::StaticClass()))
 	{
 		IWeaponInterface::Execute_Fire( Weapon->GetChildActor());    
-	}
-}
-
-void AValorantPlayerBase::TakeDamage_Implementation(const float& InDamage)
-{
-	IDamagingInterface::TakeDamage_Implementation(InDamage);
-
-	Health -= InDamage;
-
-	if (Health <= 0)
-	{
-		Destroy(); 
 	}
 }
 

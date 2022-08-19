@@ -3,10 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DamagingInterface.h"
+#include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "ValorantPlayerBase.generated.h"
 
 class UChildActorComponent; 
@@ -61,9 +60,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
 	float Health = 100.0f;
 
-	virtual void TakeDamage_Implementation(const float& InDamage) override;
-
 protected:
+
+	UFUNCTION(Server, Reliable)
+	void TakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	void Shoot();
 
