@@ -9,7 +9,7 @@
 /**
  * 
  */
-class UShopScreen;
+class UShopScreen; 
 
 UCLASS()
 class VALORANTCLONE_API AValorantHUD : public AHUD
@@ -18,10 +18,10 @@ class VALORANTCLONE_API AValorantHUD : public AHUD
 
 public:
 
+	virtual void BeginPlay() override;
 	AValorantHUD();
 
-	virtual void DrawHUD() override;
-
+	virtual void DrawHUD() override; 
 
 	UFUNCTION()
 	void ToggleStore();
@@ -31,6 +31,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	UShopScreen * ShopScreen = nullptr;
+
 private:
 
 	class UTexture2D* CrosshairTex; 

@@ -20,9 +20,9 @@ void AAK47::Fire()
 
 
 	
-	if (CurrentProjectileNum <= 0) return;
+	if (WeaponData->CurrentProjectileNum <= 0) return;
 	
-	CurrentProjectileNum --;
+	WeaponData->CurrentProjectileNum --;
 	 
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "AK47 Shot");    
 

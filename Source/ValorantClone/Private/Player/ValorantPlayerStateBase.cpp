@@ -5,9 +5,19 @@
 
 AValorantPlayerStateBase::AValorantPlayerStateBase()
 {
-	CurrHealth = Health;
+	CurHealth = Max_Health;
 
 	PlayerType = PLAYABLE_CHARACTERS::PLAYER_1;
+}
+
+void AValorantPlayerStateBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (OwnedWeapons.Num() > 0) 
+	{
+		CurrentWeapon = OwnedWeapons[0];  
+	}
 }
 
 void AValorantPlayerStateBase::BuyWeapon_Implementation(UWeaponData* Weapon)

@@ -8,6 +8,9 @@
 #include "GameFramework/Character.h"
 #include "ValorantPlayerBase.generated.h"
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerGetHit, float, Health); 
+
 class UChildActorComponent; 
 
 UCLASS()
@@ -30,6 +33,10 @@ class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagin
 
 
 public:
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerGetHit PlayerHit;
+	
 	// Sets default values for this character's properties
 	AValorantPlayerBase();
 
@@ -58,10 +65,14 @@ protected:
 
 public:	
 	
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)  
+	float Max_Health = 100.0f;
 	
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite) 
 	float Health = 100.0f;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 CurrentProjectileNum = 20;
 protected:
 
 	UFUNCTION(Server, Reliable)

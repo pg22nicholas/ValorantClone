@@ -29,14 +29,14 @@ AWeaponBase::AWeaponBase()
 
 void AWeaponBase::Reload_Implementation()
 {
-	if (!WeaponData) return;
-	CurrentProjectileNum = WeaponData->Magazine; 
+	if (!WeaponData) return; 
+	WeaponData->CurrentProjectileNum = WeaponData->Magazine; 
 }
 
 void AWeaponBase::BeginPlay() 
 {
 	
-	CurrentProjectileNum = WeaponData->Magazine; 
+	WeaponData->CurrentProjectileNum = WeaponData->Magazine; 
 	Super::BeginPlay();
 }
 

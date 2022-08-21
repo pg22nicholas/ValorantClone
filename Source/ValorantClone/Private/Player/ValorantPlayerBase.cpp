@@ -2,13 +2,9 @@
 
 
 #include "Player/ValorantPlayerBase.h"
-
-#include "Interfaces/WeaponInterface.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "Player/ValorantPlayerStateBase.h"
 #include "Weapon/WeaponBase.h"
 
 // Sets default values
@@ -78,6 +74,8 @@ void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float D
 {
 	Health -= Damage;
 
+	PlayerHit.Broadcast(Health);
+	
 	if (Health <= 0)
 	{
 		Destroy(); 
@@ -86,12 +84,9 @@ void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float D
 
 void AValorantPlayerBase::Shoot_Implementation()
 {
-	if (Weapon->GetClass() == nullptr) return;
+	if (Weapon == nullptr) return;  
 	
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Shot");
-
-	if (Weapon == nullptr) return;
-	//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, LaserWeapon->GetChildActor()->GetName());
+	if (Weapon->GetClass() == nullptr) return; 
 	
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
@@ -101,12 +96,10 @@ void AValorantPlayerBase::Shoot_Implementation()
 
 void AValorantPlayerBase::Reload_Implementation() 
 {
-	if (Weapon->GetClass() == nullptr) return;
-	
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Reload"); 
-
+ 
 	if (Weapon == nullptr) return;
-	//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, LaserWeapon->GetChildActor()->GetName());
+	
+	if (Weapon->GetClass() == nullptr) return; 
 	
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{

@@ -43,9 +43,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UWeaponData* WeaponData;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 CurrentProjectileNum;
+	
 	
 	
 	// UFUNCTION(Server, Reliable)

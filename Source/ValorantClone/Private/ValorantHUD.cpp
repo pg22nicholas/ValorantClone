@@ -3,21 +3,23 @@
 
 #include "ValorantHUD.h"
 #include "ShopScreen.h" 
-
 #include "Blueprint/UserWidget.h"
-#include "Weapon/WeaponBase.h"
 
 
-AValorantHUD::AValorantHUD() 
+void AValorantHUD::BeginPlay()
 {
-
+	Super::BeginPlay(); 
+	
 }
+
+AValorantHUD::AValorantHUD()
+{
+} 
 
 void AValorantHUD::DrawHUD()
 {
 	Super::DrawHUD();
-
-
+	
 }
 
 void AValorantHUD::ToggleStore()
@@ -28,6 +30,7 @@ void AValorantHUD::ToggleStore()
 	APlayerController * PlayerController = world->GetFirstPlayerController();
 	if (!PlayerController) return;; 
 	
+
 	if (!ShopScreen) 
 	{
 		// OPEN LOGIC

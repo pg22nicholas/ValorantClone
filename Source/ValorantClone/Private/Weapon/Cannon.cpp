@@ -23,9 +23,9 @@ void ACannon::Fire()
 	if (!instigator) return;
 
 
-	if (CurrentProjectileNum <= 0) return;
+	if (WeaponData->CurrentProjectileNum <= 0) return; 
 	
-	CurrentProjectileNum --;
+	WeaponData->CurrentProjectileNum --;
 	
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");    
 
