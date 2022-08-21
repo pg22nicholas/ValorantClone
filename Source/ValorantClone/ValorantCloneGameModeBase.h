@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
 #include "Player/ValorantPlayerBase.h"
+#include "Weapon/WeaponData.h" 
 #include "ValorantCloneGameModeBase.generated.h"
+
+class UWeaponData; 
 
 enum class TEAMS;
 enum class PLAYABLE_CHARACTERS;
@@ -26,6 +29,8 @@ public:
 
 	FTransform GetSpawnPoint(TEAMS teams) const;
 
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess))  
+	TArray<UWeaponData*> AllWeapons;   
 private:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess))
 	TArray<TSubclassOf<AValorantPlayerBase>> PlayerCharacterTypes;

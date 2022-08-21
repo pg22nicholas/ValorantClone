@@ -3,6 +3,7 @@
 
 #include "player/ValorantPlayerControllerBase.h"
 
+#include "ValorantHUD.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/ValorantPlayerBase.h"
 #include "player/ValorantPlayerStateBase.h"
@@ -40,5 +41,26 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 		
 		if (CachedPawn != nullptr)
 			CachedPawn->Destroy();
+	}
+}
+
+void AValorantPlayerControllerBase::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (!InputComponent) return;
+
+	UWorld * world = GetWorld();
+	if (!world) return;
+	 
+	InputComponent->BindAction("Store", IE_Pressed, this, &AValorantPlayerControllerBase::ToggleStore );
+	
+}
+
+void AValorantPlayerControllerBase::ToggleStore()
+{
+	if (AValorantHUD * hud = GetHUD<AValorantHUD>()) 
+	{
+		hud->ToggleStore();
 	}
 }

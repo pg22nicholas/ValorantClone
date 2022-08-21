@@ -36,6 +36,9 @@ void AExplosiveProjectile::BeginPlay()
 void AExplosiveProjectile::Explode()
 {
 	// TODO: Sound and VFX?
+	
+	Destroy();  
+
 }
 
 void AExplosiveProjectile::OnProjectileHit_Implementation(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)

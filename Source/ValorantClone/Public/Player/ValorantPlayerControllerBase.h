@@ -19,9 +19,15 @@ public:
 	UFUNCTION(Server, Reliable)
 	void SER_SpawnPlayer();
 
+	virtual void SetupInputComponent() override;
+
+	UFUNCTION() 
+	void ToggleStore();
+	
 private:
 
 	UPROPERTY()
 	AValorantPlayerBase* OwningCharacter;
-	
+
+
 };
