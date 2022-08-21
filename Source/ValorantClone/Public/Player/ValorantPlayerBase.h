@@ -25,7 +25,9 @@ class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagin
 	USkeletalMeshComponent* MeshBody;
 	
 	UPROPERTY(VisibleDefaultsOnly, Category=Weapon)
-	UChildActorComponent* Weapon;
+	UChildActorComponent* Weapon; 
+
+
 
 public:
 	// Sets default values for this character's properties
@@ -48,6 +50,7 @@ public:
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* FireAnimation;
+
 	
 protected:
 	// Called when the game starts or when spawned
@@ -66,6 +69,9 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void Shoot();
+
+	UFUNCTION(Server, Reliable)
+	void Reload();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);

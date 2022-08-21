@@ -21,6 +21,9 @@ public:
 	AWeaponBase();
 
 	virtual void Fire() PURE_VIRTUAL(AWeaponBase::FireLogic, );
+
+	UFUNCTION(BlueprintCallable, Server, Reliable) 
+	void Reload ();
 	 
 protected:
 	// Called when the game starts
@@ -35,16 +38,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UArrowComponent * Arrow;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AActor> Projectile;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USceneComponent* Barrel;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UWeaponData* WeaponData;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 CurrentProjectileNum;
 	
 	
 	// UFUNCTION(Server, Reliable)

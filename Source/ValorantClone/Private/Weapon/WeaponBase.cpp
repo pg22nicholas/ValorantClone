@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/SceneComponent.h"
+#include "Weapon/WeaponData.h"
 
 // Sets default values for this component's properties
 AWeaponBase::AWeaponBase()
@@ -24,11 +25,18 @@ AWeaponBase::AWeaponBase()
 
 	Barrel = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
 	Barrel->SetupAttachment(WeaponMesh);
-	
 }
 
-void AWeaponBase::BeginPlay()
+void AWeaponBase::Reload_Implementation()
 {
+	if (!WeaponData) return;
+	CurrentProjectileNum = WeaponData->Magazine; 
+}
+
+void AWeaponBase::BeginPlay() 
+{
+	
+	CurrentProjectileNum = WeaponData->Magazine; 
 	Super::BeginPlay();
 }
 

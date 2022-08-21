@@ -60,6 +60,7 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AValorantPlayerBase::Shoot); 
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AValorantPlayerBase::Reload);  
 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AValorantPlayerBase::MoveForward);
@@ -87,7 +88,7 @@ void AValorantPlayerBase::Shoot_Implementation()
 {
 	if (Weapon->GetClass() == nullptr) return;
 	
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");
+	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Shot");
 
 	if (Weapon == nullptr) return;
 	//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, LaserWeapon->GetChildActor()->GetName());
@@ -95,6 +96,21 @@ void AValorantPlayerBase::Shoot_Implementation()
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
 		weaponBase->Fire(); 
+	}
+}
+
+void AValorantPlayerBase::Reload_Implementation() 
+{
+	if (Weapon->GetClass() == nullptr) return;
+	
+	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Reload"); 
+
+	if (Weapon == nullptr) return;
+	//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, LaserWeapon->GetChildActor()->GetName());
+	
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
+	{
+		weaponBase->Reload(); 
 	}
 }
 

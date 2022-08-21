@@ -4,6 +4,7 @@
 #include "Weapon/Cannon.h"
 
 #include "Chaos/CollisionResolutionUtil.h"
+#include "Weapon/WeaponData.h"
 
 ACannon::ACannon()
 {
@@ -20,6 +21,12 @@ void ACannon::Fire()
 {
 	APawn* instigator = Cast<APawn>(GetParentActor());
 	if (!instigator) return;
+
+
+	if (CurrentProjectileNum <= 0) return;
+	
+	CurrentProjectileNum --;
+	
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");    
 
 	FTransform SpawnTransform = GetTransform();
@@ -31,7 +38,7 @@ void ACannon::Fire()
 //	SpawnTransform.SetLocation({Location.X, Location.Y, Location.Z + 70});   
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, SpawnTransform.GetLocation().ToString()) ;    
 	
-	GetWorld()->SpawnActor<AActor>(Projectile,SpawnTransform, SpawnParams);
+	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,SpawnTransform, SpawnParams); 
 }
 
 

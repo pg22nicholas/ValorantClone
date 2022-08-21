@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "ValorantClone/ValorantCloneGameModeBase.h"
+#include "Weapon/WeaponBase.h"
 #include "ValorantPlayerStateBase.generated.h"
 
 /**
@@ -22,8 +23,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Health = 100;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
 	int32 Money = 100;
+
+	UFUNCTION(Server, Reliable) 
+	void BuyWeapon(UWeaponData* Weapon);  
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
+	TArray<UWeaponData*> OwnedWeapons;
 	
 	void SetPlayerType(PLAYABLE_CHARACTERS playerType) { PlayerType = playerType; }
 	PLAYABLE_CHARACTERS GetPlayerType() { return PlayerType; }

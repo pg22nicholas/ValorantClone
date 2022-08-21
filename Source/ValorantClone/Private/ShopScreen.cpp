@@ -2,20 +2,24 @@
 
 
 #include "ShopScreen.h"
+
+#include "Components/Button.h"
 #include "Components/ListView.h"
-#include "Components/TileView.h"
+#include "player/ValorantPlayerStateBase.h"
 #include "ValorantClone/ValorantCloneGameModeBase.h"
-#include "ValorantClone/Public/Weapon/WeaponBase.h" 
 
 
 void UShopScreen::NativeOnInitialized()
 {
 	Super::NativeOnInitialized(); 
 
+
+	
 	UWorld* world = GetWorld();
 
 	if (!world) return;
-
+	
+	BuyButton->OnClicked.AddDynamic(this, &UShopScreen::Purchase);
 	
 	if (AValorantCloneGameModeBase* gameMode = world->GetAuthGameMode<AValorantCloneGameModeBase>())
 	{
@@ -39,4 +43,19 @@ void UShopScreen::NativeOnInitialized()
 	} 
 
 	
+}
+
+void UShopScreen::Purchase()
+{
+
+	UWorld * world = GetWorld();
+	if (!world) return;
+
+	APlayerController * PlayerController = world->GetFirstPlayerController();
+	if (!PlayerController) return;
+	
+	if (UWeaponData* SelectedWeapon = PrimaryWeapons->GetSelectedItem<UWeaponData>())
+	{
+		PlayerController->GetPlayerState<AValorantPlayerStateBase>()->BuyWeapon(SelectedWeapon); 
+	}
 }

@@ -30,4 +30,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite , Category="Weapon Data")   
 	FText WeaponName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data") 
+	int32 Magazine = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")
+	TSubclassOf<AActor> Projectile;
 };

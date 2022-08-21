@@ -10,7 +10,8 @@
 /**
  * 
  */ 
-class UListView; 
+class UListView;
+class UButton;
 
 UCLASS()
 class VALORANTCLONE_API UShopScreen : public UUserWidget, public  IUserObjectListEntry
@@ -18,15 +19,19 @@ class VALORANTCLONE_API UShopScreen : public UUserWidget, public  IUserObjectLis
 {
 	GENERATED_BODY()
 
-public:
-
+public: 
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget)) 
 	UListView* PrimaryWeapons;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
 	UListView* SecondaryWeapons;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
+	UButton* BuyButton;
+	
 	virtual  void NativeOnInitialized() override;
 
-	
+	UFUNCTION()
+	void Purchase();
 };
