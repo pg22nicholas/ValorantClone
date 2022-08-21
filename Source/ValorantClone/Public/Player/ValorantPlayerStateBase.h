@@ -22,6 +22,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Health = 100;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	int32 Money = 100;
+	
 	void SetPlayerType(PLAYABLE_CHARACTERS playerType) { PlayerType = playerType; }
 	PLAYABLE_CHARACTERS GetPlayerType() { return PlayerType; }
 

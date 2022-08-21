@@ -9,3 +9,7 @@ AValorantPlayerStateBase::AValorantPlayerStateBase()
 
 	PlayerType = PLAYABLE_CHARACTERS::PLAYER_1;
 }
+
+
+
+
