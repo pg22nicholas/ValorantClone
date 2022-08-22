@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
-#include "PlayerWidget.generated.h"
+#include "PlayerWidget.generated.h" 
 
 
 class UTextBlock;
@@ -45,7 +45,10 @@ public:
 protected:
 
 	UFUNCTION()
-	void ChangeHealthText(float Health) ; 
- 
+	void ChangeHealthText(float Health) ;
+
+	UFUNCTION()
+	void ChangeMoneyText(int32 Money) ;    
+	
 	virtual  void NativeOnInitialized() override;
 };

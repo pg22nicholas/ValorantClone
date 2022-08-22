@@ -10,6 +10,7 @@
  * 
  */
 class UShopScreen; 
+class UPlayerWidget;
 
 UCLASS()
 class VALORANTCLONE_API AValorantHUD : public AHUD
@@ -29,9 +30,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly) 
 	TSubclassOf<UShopScreen> ShopScreenClass; 
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly) 
+	TSubclassOf<UPlayerWidget> PlayerWidgetClass; 
+	
 	UPROPERTY(BlueprintReadOnly)
 	UShopScreen * ShopScreen = nullptr;
 
+	UPROPERTY(BlueprintReadOnly)
+	UPlayerWidget* PlayerWidget = nullptr;
 private:
 
 	class UTexture2D* CrosshairTex; 

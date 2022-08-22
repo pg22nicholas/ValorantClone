@@ -23,6 +23,8 @@ void AAK47::Fire()
 	if (WeaponData->CurrentProjectileNum <= 0) return;
 	
 	WeaponData->CurrentProjectileNum --;
+
+	//PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(WeaponData->CurrentProjectileNum));
 	 
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "AK47 Shot");    
 

@@ -26,13 +26,12 @@ class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagin
 
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* MeshBody;
-	
-	UPROPERTY(VisibleDefaultsOnly, Category=Weapon)
-	UChildActorComponent* Weapon; 
 
-
+ 
 
 public:
+	UPROPERTY(VisibleDefaultsOnly, Category=Weapon)
+	UChildActorComponent* Weapon; 
 
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerGetHit PlayerHit;
@@ -84,6 +83,8 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void Reload();
 
+	UFUNCTION(Server, Reliable)
+	void SwitchWeapon();   
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
 

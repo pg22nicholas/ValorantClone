@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PlayerWidget.h"
 #include "WeaponBase.generated.h"
 
 class UStaticMeshComponent;
 class UArrowComponent;
 class USceneComponent;
 class UWeaponData;
-
 
 UCLASS( Abstract, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VALORANTCLONE_API AWeaponBase : public AActor  
@@ -24,7 +24,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Server, Reliable) 
 	void Reload ();
-	 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UWeaponData* WeaponData; 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -40,12 +42,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USceneComponent* Barrel;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UWeaponData* WeaponData;
-	
-	
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPlayerWidget * PlayerWidget; 
 	// UFUNCTION(Server, Reliable)
 	// virtual void Reload();
 	//

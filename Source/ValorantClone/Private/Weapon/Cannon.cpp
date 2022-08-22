@@ -3,6 +3,8 @@
 
 #include "Weapon/Cannon.h"
 
+#include "PlayerWidget.h"
+#include "ValorantHUD.h"
 #include "Chaos/CollisionResolutionUtil.h"
 #include "Weapon/WeaponData.h"
 
@@ -21,11 +23,14 @@ void ACannon::Fire()
 {
 	APawn* instigator = Cast<APawn>(GetParentActor());
 	if (!instigator) return;
-
-
-	if (WeaponData->CurrentProjectileNum <= 0) return; 
 	
-	WeaponData->CurrentProjectileNum --;
+	if (WeaponData->CurrentProjectileNum <= 0) return; 
+
+	//if(!PlayerWidget) return;
+	
+	WeaponData->CurrentProjectileNum --;  
+
+	//PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(WeaponData->CurrentProjectileNum)); 
 	
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");    
 
@@ -34,8 +39,7 @@ void ACannon::Fire()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Instigator = instigator;
 	SpawnParams.Owner = instigator;
-//	const FVector Location = GetActorLocation();
-//	SpawnTransform.SetLocation({Location.X, Location.Y, Location.Z + 70});   
+	
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, SpawnTransform.GetLocation().ToString()) ;    
 	
 	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,SpawnTransform, SpawnParams); 

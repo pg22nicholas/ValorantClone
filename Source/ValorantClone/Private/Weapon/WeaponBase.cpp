@@ -6,6 +6,10 @@
 #include "Components/ArrowComponent.h"
 #include "Components/SceneComponent.h"
 #include "Weapon/WeaponData.h"
+#include "PlayerWidget.h"
+#include "ValorantHUD.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "GameFramework/HUD.h"
 
 // Sets default values for this component's properties
 AWeaponBase::AWeaponBase()
@@ -38,6 +42,20 @@ void AWeaponBase::BeginPlay()
 	
 	WeaponData->CurrentProjectileNum = WeaponData->Magazine; 
 	Super::BeginPlay();
+	
+	UWorld * World = GetWorld();
+	if (!World) return;
+	
+	APlayerController * PlayerController = World->GetFirstPlayerController();
+	if (!PlayerController) return;
+
+	AValorantHUD* HUD = PlayerController->GetHUD<AValorantHUD>();
+	if (!HUD) return;
+
+	UPlayerWidget* Widget = HUD->PlayerWidget;
+	if (!Widget) return;
+
+	PlayerWidget = Widget; 
 }
 
 

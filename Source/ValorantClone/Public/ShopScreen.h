@@ -28,10 +28,16 @@ public:
 	UListView* SecondaryWeapons;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
-	UButton* BuyButton;
+	UButton* BuyPrimaryWeaponButton;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
+	UButton* BuySecondaryWeaponButton; 
 	
 	virtual  void NativeOnInitialized() override;
 
 	UFUNCTION()
-	void Purchase();
+	void PurchasePrimaryWeapon();
+
+	UFUNCTION()
+	void PurchaseSecondaryWeapon();
 };

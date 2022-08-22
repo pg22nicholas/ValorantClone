@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "player/ValorantPlayerStateBase.h"
 #include "Weapon/WeaponBase.h"
 
 // Sets default values
@@ -58,6 +59,8 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AValorantPlayerBase::Shoot); 
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AValorantPlayerBase::Reload);  
 
+	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &AValorantPlayerBase::SwitchWeapon);  
+ 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AValorantPlayerBase::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AValorantPlayerBase::MoveRight);
@@ -82,13 +85,17 @@ void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float D
 	}
 }
 
-void AValorantPlayerBase::Shoot_Implementation()
+void AValorantPlayerBase::Shoot_Implementation() 
 {
+
+	Health --;
+	PlayerHit.Broadcast(Health); 
+	
 	if (Weapon == nullptr) return;  
 	
 	if (Weapon->GetClass() == nullptr) return; 
 	
-	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor())) 
 	{
 		weaponBase->Fire(); 
 	}
@@ -104,6 +111,26 @@ void AValorantPlayerBase::Reload_Implementation()
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
 		weaponBase->Reload(); 
+	}
+}
+
+void AValorantPlayerBase::SwitchWeapon_Implementation()  
+{
+	AValorantPlayerStateBase* ValorantState = GetPlayerState<AValorantPlayerStateBase>();
+	if (!ValorantState) return;
+
+	ValorantState->SwitchWeapon();
+
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, "Switch"); 
+	
+	if (!ValorantState->CurrentWeapon) return;  
+
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, (ValorantState->CurrentWeapon->WeaponName).ToString()); 
+
+	
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor())) 
+	{
+		weaponBase->WeaponData = ValorantState->CurrentWeapon; 
 	}
 }
 

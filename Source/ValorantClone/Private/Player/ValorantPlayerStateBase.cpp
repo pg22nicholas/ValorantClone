@@ -3,6 +3,8 @@
 
 #include "player/ValorantPlayerStateBase.h"
 
+#include "Weapon/WeaponBase.h"
+
 AValorantPlayerStateBase::AValorantPlayerStateBase()
 {
 	CurHealth = Max_Health;
@@ -10,10 +12,46 @@ AValorantPlayerStateBase::AValorantPlayerStateBase()
 	PlayerType = PLAYABLE_CHARACTERS::PLAYER_1;
 }
 
+void AValorantPlayerStateBase::SwitchWeapon_Implementation()
+{
+	const int& ListLength =  OwnedWeapons.Num();
+	if (ListLength <= 1 ) return;
+	
+    for (int i = 0; i < ListLength; i++)
+    {
+	    if (OwnedWeapons[i] == CurrentWeapon)
+	    {
+		    if (i+1 < ListLength) 
+		    {
+			    CurrentWeapon = OwnedWeapons[i+1];
+		    	return;
+		    }
+	    	else
+	    	{
+	    		CurrentWeapon =  OwnedWeapons[0];
+	    		return;
+	    	}
+	    }
+    	
+    }
+	
+}
+
 void AValorantPlayerStateBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AValorantPlayerBase * PlayerBase = GetPawn<AValorantPlayerBase>();
+	if (!PlayerBase) return;
+
+	
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(PlayerBase->Weapon->GetChildActor())) 
+	{
+		if (!weaponBase->WeaponData) return; 
+		
+		OwnedWeapons.Add(weaponBase->WeaponData);   
+	}
+	
 	if (OwnedWeapons.Num() > 0) 
 	{
 		CurrentWeapon = OwnedWeapons[0];  
@@ -41,7 +79,9 @@ void AValorantPlayerStateBase::BuyWeapon_Implementation(UWeaponData* Weapon)
 	
 	// Money decrement
 	Money-=Weapon->WeaponPrice;
-
+	
+	PurchaseDelegate.Broadcast(Money); // Hud update delegate
+	
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Purchased"); 
 
 

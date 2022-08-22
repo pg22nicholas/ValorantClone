@@ -7,6 +7,11 @@
 #include "ValorantClone/ValorantCloneGameModeBase.h"
 #include "ValorantPlayerStateBase.generated.h"
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPurchaseEvent, int32, Money);
+
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponSwitchEvent, FText, CurAmmoName);
 /**
  * 
  */
@@ -42,7 +47,14 @@ public:
 	void SetPlayerType(PLAYABLE_CHARACTERS playerType) { PlayerType = playerType; }
 	PLAYABLE_CHARACTERS GetPlayerType() { return PlayerType; }
 
+	UPROPERTY()
+	FPurchaseEvent PurchaseDelegate;
 
+	UPROPERTY()
+	FWeaponSwitchEvent WeaponSwitchDelegate;
+
+	UFUNCTION(Server, Reliable,BlueprintCallable)
+	void SwitchWeapon();
 	
 private:
 	

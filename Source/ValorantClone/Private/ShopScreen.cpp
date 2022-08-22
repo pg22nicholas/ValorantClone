@@ -2,7 +2,6 @@
 
 
 #include "ShopScreen.h"
-
 #include "Components/Button.h"
 #include "Components/ListView.h"
 #include "player/ValorantPlayerStateBase.h"
@@ -12,14 +11,14 @@
 void UShopScreen::NativeOnInitialized()
 {
 	Super::NativeOnInitialized(); 
-
-
 	
 	UWorld* world = GetWorld();
 
 	if (!world) return;
-	
-	BuyButton->OnClicked.AddDynamic(this, &UShopScreen::Purchase);
+
+	// Listen to Buy buttons clicks
+	BuyPrimaryWeaponButton->OnClicked.AddDynamic(this, &UShopScreen::PurchasePrimaryWeapon);
+	BuySecondaryWeaponButton->OnClicked.AddDynamic(this, &UShopScreen::PurchaseSecondaryWeapon);
 	
 	if (AValorantCloneGameModeBase* gameMode = world->GetAuthGameMode<AValorantCloneGameModeBase>())
 	{
@@ -45,7 +44,7 @@ void UShopScreen::NativeOnInitialized()
 	
 }
 
-void UShopScreen::Purchase()
+void UShopScreen::PurchasePrimaryWeapon()
 {
 
 	UWorld * world = GetWorld();
@@ -55,6 +54,20 @@ void UShopScreen::Purchase()
 	if (!PlayerController) return;
 	
 	if (UWeaponData* SelectedWeapon = PrimaryWeapons->GetSelectedItem<UWeaponData>())
+	{
+		PlayerController->GetPlayerState<AValorantPlayerStateBase>()->BuyWeapon(SelectedWeapon); 
+	}
+}
+
+void UShopScreen::PurchaseSecondaryWeapon()
+{
+	UWorld * world = GetWorld();
+	if (!world) return;
+
+	APlayerController * PlayerController = world->GetFirstPlayerController();
+	if (!PlayerController) return; 
+	
+	if (UWeaponData* SelectedWeapon = SecondaryWeapons->GetSelectedItem<UWeaponData>())
 	{
 		PlayerController->GetPlayerState<AValorantPlayerStateBase>()->BuyWeapon(SelectedWeapon); 
 	}

@@ -6,10 +6,18 @@
 #include "Player/ValorantPlayerStateBase.h"
 
 void UPlayerWidget::ChangeHealthText(float Health) 
-{
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Blue, FString::FromInt(Health  + 100));    
-	MaxHealthText->Text = FText::AsNumber(Health);   
+{ 
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Blue, "Health Update");     
+	CurrentHealthText->Text = FText::AsNumber(Health);    
 }
+
+void UPlayerWidget::ChangeMoneyText(int32 Money)
+{
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Blue, "Money update");     
+	MoneyText->SetText(FText::AsNumber(Money));  
+	
+}
+
 
 void UPlayerWidget::NativeOnInitialized() 
 {
@@ -18,16 +26,22 @@ void UPlayerWidget::NativeOnInitialized()
 	UWorld * World = GetWorld();
 	if (!World) return;
 
+	AValorantCloneGameModeBase* GameMode = World->GetAuthGameMode<AValorantCloneGameModeBase>();
+	if (!GameMode) return;
+
+	AValorantPlayerBase* Player = Cast<AValorantPlayerBase>(GameMode->DefaultPawnClass.GetDefaultObject()); 
+	if (!Player) return;
+
 	APlayerController* PlayerController = World->GetFirstPlayerController();
 	if (!PlayerController) return;
 
-	AValorantPlayerBase* Player = PlayerController->GetPawn<AValorantPlayerBase>();
-	if (!Player) return;
- 
+	AValorantPlayerStateBase* PlayerSate = PlayerController->GetPlayerState<AValorantPlayerStateBase>();
+	if (!PlayerSate) return;
+
+
+	// Listen to Delegates to update HUD:
 	Player->PlayerHit.AddDynamic(this, &UPlayerWidget::ChangeHealthText);
+	
+	PlayerSate->PurchaseDelegate.AddDynamic(this, &UPlayerWidget::ChangeMoneyText);  
 
-		
-	//MaxHealthText->Text = FText::AsNumber(PlayerState->Max_Health);  
-
-	//MagazineText->Text = FText::AsNumber(PlayerState->CurrentWeapon->Magazine);  
 }

@@ -3,13 +3,26 @@
 
 #include "ValorantHUD.h"
 #include "ShopScreen.h" 
+#include "PlayerWidget.h" 
 #include "Blueprint/UserWidget.h"
 
 
 void AValorantHUD::BeginPlay()
 {
-	Super::BeginPlay(); 
+	Super::BeginPlay();
 	
+	UWorld * world = GetWorld();
+	if (!world) return;
+
+	APlayerController * PlayerController = world->GetFirstPlayerController();
+	if (!PlayerController) return;
+
+	if (PlayerWidget)
+	{
+		PlayerWidget = CreateWidget<UPlayerWidget>(GetOwningPlayerController(), PlayerWidgetClass, TEXT ("PlayerWidget"));
+
+		PlayerWidget->AddToViewport(5); 
+	}
 }
 
 AValorantHUD::AValorantHUD()
@@ -18,7 +31,7 @@ AValorantHUD::AValorantHUD()
 
 void AValorantHUD::DrawHUD()
 {
-	Super::DrawHUD();
+	Super::DrawHUD();  
 	
 }
 
@@ -28,8 +41,7 @@ void AValorantHUD::ToggleStore()
 	if (!world) return;
 
 	APlayerController * PlayerController = world->GetFirstPlayerController();
-	if (!PlayerController) return;; 
-	
+	if (!PlayerController) return;
 
 	if (!ShopScreen) 
 	{
