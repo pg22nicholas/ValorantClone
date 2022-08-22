@@ -5,6 +5,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "PlayerWidget.h"
+#include "ValorantHUD.h"
 #include "player/ValorantPlayerStateBase.h"
 #include "Weapon/WeaponBase.h"
 
@@ -44,6 +46,22 @@ void AValorantPlayerBase::BeginPlay()
 {
 	Super::BeginPlay();
 	OnTakeAnyDamage.AddDynamic(this, &AValorantPlayerBase::SetDamage);
+	
+	UWorld * World = GetWorld();
+	if (!World) return;
+	
+	APlayerController * PlayerController = World->GetFirstPlayerController();
+	if (!PlayerController) return;
+
+	AValorantHUD* HUD = PlayerController->GetHUD<AValorantHUD>();
+	if (!HUD) return;
+
+	UPlayerWidget* Widget = HUD->PlayerWidget;
+	if (!Widget) return;
+
+	PlayerWidget = Widget;
+
+	PlayerWidget->MaxHealthText->SetText(FText::AsNumber(Max_Health)); 
 }
 
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -77,19 +95,19 @@ void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float D
 {
 	Health -= Damage;
 
-	PlayerHit.Broadcast(Health);
+	if (PlayerWidget)
+	{
+		PlayerWidget->CurrentHealthText->SetText(FText::AsNumber(Health));
+	} 
 	
 	if (Health <= 0)
-	{
+	{ 
 		Destroy(); 
 	}
 }
 
 void AValorantPlayerBase::Shoot_Implementation() 
 {
-
-	Health --;
-	PlayerHit.Broadcast(Health); 
 	
 	if (Weapon == nullptr) return;  
 	
@@ -101,7 +119,7 @@ void AValorantPlayerBase::Shoot_Implementation()
 	}
 }
 
-void AValorantPlayerBase::Reload_Implementation() 
+void AValorantPlayerBase::Reload_Implementation()   
 {
  
 	if (Weapon == nullptr) return;
@@ -130,7 +148,9 @@ void AValorantPlayerBase::SwitchWeapon_Implementation()
 	
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor())) 
 	{
-		weaponBase->WeaponData = ValorantState->CurrentWeapon; 
+		weaponBase->WeaponData = ValorantState->CurrentWeapon;
+
+		weaponBase->Equip(); 
 	}
 }
 

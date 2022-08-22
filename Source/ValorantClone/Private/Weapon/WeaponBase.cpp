@@ -10,6 +10,7 @@
 #include "ValorantHUD.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/HUD.h"
+#include "player/ValorantPlayerStateBase.h"
 
 // Sets default values for this component's properties
 AWeaponBase::AWeaponBase()
@@ -31,15 +32,77 @@ AWeaponBase::AWeaponBase()
 	Barrel->SetupAttachment(WeaponMesh);
 }
 
-void AWeaponBase::Reload_Implementation()
+void AWeaponBase::Fire()
 {
-	if (!WeaponData) return; 
-	WeaponData->CurrentProjectileNum = WeaponData->Magazine; 
+	APawn* instigator = Cast<APawn>(GetParentActor());
+	if (!instigator) return;
+	
+	if (WeaponData->CurrentProjectileNum <= 0)
+	{
+		Reload();  
+		return;
+	}
+
+	if(!PlayerWidget) return;
+	
+	WeaponData->CurrentProjectileNum --;  
+
+	PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(WeaponData->CurrentProjectileNum));  
+	
+	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");    
+
+	FTransform SpawnTransform = GetTransform();
+	SpawnTransform.SetLocation(Barrel->GetComponentLocation());
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Instigator = instigator;
+	SpawnParams.Owner = instigator;
+	
+	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, SpawnTransform.GetLocation().ToString()) ;    
+	
+	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,SpawnTransform, SpawnParams);
+
+	if (WeaponData->Automatic)
+	{
+		GetWorldTimerManager().SetTimer( TimerHandle, this, &AWeaponBase::Fire, WeaponData->Rate, false);
+	}
+}
+
+void AWeaponBase::Reload() 
+{
+	if (!WeaponData) return;
+
+	if (WeaponData->AllAmmo < 0) return;
+
+	if (WeaponData->AllAmmo < WeaponData->Magazine)
+	{
+		WeaponData->CurrentProjectileNum = WeaponData->AllAmmo;
+		WeaponData->AllAmmo = 0;
+	}
+	else
+	{
+		WeaponData->CurrentProjectileNum = WeaponData->Magazine;
+		WeaponData->AllAmmo -= WeaponData->Magazine;
+	}
+	
+	PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(WeaponData->AllAmmo));  
+	PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(WeaponData->CurrentProjectileNum)); 
+}
+
+void AWeaponBase::Equip()
+{
+	PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(WeaponData->AllAmmo));  
+	PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(WeaponData->CurrentProjectileNum));
+	PlayerWidget->MagazineText->SetText(FText::AsNumber(WeaponData->Magazine)); 
+
+	if (WeaponData->WeaponMesh)
+	{
+		WeaponMesh = WeaponData->WeaponMesh;
+	}
 }
 
 void AWeaponBase::BeginPlay() 
 {
-	
+	if (!WeaponData) return; 
 	WeaponData->CurrentProjectileNum = WeaponData->Magazine; 
 	Super::BeginPlay();
 	
@@ -55,7 +118,10 @@ void AWeaponBase::BeginPlay()
 	UPlayerWidget* Widget = HUD->PlayerWidget;
 	if (!Widget) return;
 
-	PlayerWidget = Widget; 
+	PlayerWidget = Widget;
+
+	PlayerWidget->MagazineText->SetText(FText::AsNumber(WeaponData->Magazine));
+	PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(WeaponData->AllAmmo)); 
 }
 
 

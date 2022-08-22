@@ -8,10 +8,8 @@
 #include "GameFramework/Character.h"
 #include "ValorantPlayerBase.generated.h"
 
-UDELEGATE()
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerGetHit, float, Health); 
-
 class UChildActorComponent; 
+class UPlayerWidget;
 
 UCLASS()
 class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagingInterface
@@ -32,9 +30,6 @@ class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagin
 public:
 	UPROPERTY(VisibleDefaultsOnly, Category=Weapon)
 	UChildActorComponent* Weapon; 
-
-	UPROPERTY(BlueprintAssignable)
-	FOnPlayerGetHit PlayerHit;
 	
 	// Sets default values for this character's properties
 	AValorantPlayerBase();
@@ -70,8 +65,6 @@ public:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite) 
 	float Health = 100.0f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 CurrentProjectileNum = 20;
 protected:
 
 	UFUNCTION(Server, Reliable)
@@ -80,7 +73,7 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void Shoot();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable) 
 	void Reload();
 
 	UFUNCTION(Server, Reliable)
@@ -103,4 +96,6 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+	UPROPERTY()
+	UPlayerWidget* PlayerWidget;
 };

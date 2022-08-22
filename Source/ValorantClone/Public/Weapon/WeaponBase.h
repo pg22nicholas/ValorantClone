@@ -20,13 +20,20 @@ public:
 	// Sets default values for this component's properties
 	AWeaponBase();
 
-	virtual void Fire() PURE_VIRTUAL(AWeaponBase::FireLogic, );
+	UFUNCTION(BlueprintCallable)
+	void Fire();
 
-	UFUNCTION(BlueprintCallable, Server, Reliable) 
-	void Reload ();
+	UFUNCTION(BlueprintCallable) 
+	void Reload();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UWeaponData* WeaponData; 
+	UWeaponData* WeaponData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent * WeaponMesh;
+
+	UFUNCTION()
+	void Equip();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -35,16 +42,16 @@ protected:
 	USceneComponent* SceneComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMeshComponent * WeaponMesh;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UArrowComponent * Arrow;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USceneComponent* Barrel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UPlayerWidget * PlayerWidget; 
+	UPlayerWidget* PlayerWidget;
+	
+	UPROPERTY()
+	FTimerHandle TimerHandle;  
 	// UFUNCTION(Server, Reliable)
 	// virtual void Reload();
 	//

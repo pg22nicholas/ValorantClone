@@ -17,10 +17,10 @@ void AValorantHUD::BeginPlay()
 	APlayerController * PlayerController = world->GetFirstPlayerController();
 	if (!PlayerController) return;
 
-	if (PlayerWidget)
+	if (!PlayerWidget) 
 	{
 		PlayerWidget = CreateWidget<UPlayerWidget>(GetOwningPlayerController(), PlayerWidgetClass, TEXT ("PlayerWidget"));
-
+		ShopScreen = CreateWidget<UShopScreen>(GetOwningPlayerController(), ShopScreenClass, TEXT ("STORE"));
 		PlayerWidget->AddToViewport(5); 
 	}
 }

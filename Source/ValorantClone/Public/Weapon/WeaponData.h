@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite , Category="Weapon Data")   
 	FText WeaponName;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")    
+	int32 AllAmmo = 20;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data") 
 	int32 Magazine = 10;
 	
@@ -39,4 +42,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")
 	TSubclassOf<AActor> Projectile;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")   
+	bool Automatic = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")   
+	float Rate = 1.0f; 
 };

@@ -2,14 +2,8 @@
 
 
 #include "PlayerWidget.h"
-
 #include "Player/ValorantPlayerStateBase.h"
 
-void UPlayerWidget::ChangeHealthText(float Health) 
-{ 
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Blue, "Health Update");     
-	CurrentHealthText->Text = FText::AsNumber(Health);    
-}
 
 void UPlayerWidget::ChangeMoneyText(int32 Money)
 {
@@ -39,9 +33,7 @@ void UPlayerWidget::NativeOnInitialized()
 	if (!PlayerSate) return;
 
 
-	// Listen to Delegates to update HUD:
-	Player->PlayerHit.AddDynamic(this, &UPlayerWidget::ChangeHealthText);
-	
+	// Listen to Money Delegate to update HUD:
 	PlayerSate->PurchaseDelegate.AddDynamic(this, &UPlayerWidget::ChangeMoneyText);  
 
 }
