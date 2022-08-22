@@ -21,12 +21,10 @@ void AValorantPlayerStateBase::SwitchWeapon_Implementation()
 		CurrentWeapon = SecondaryWeapon;
 	}
 	else CurrentWeapon = PrimaryWeapon;
-		
-
-	
 	
 	
 }
+
 
 void AValorantPlayerStateBase::BeginPlay()
 {
@@ -59,8 +57,6 @@ void AValorantPlayerStateBase::BuyWeapon_Implementation(UWeaponData* Weapon)
 	}
 
 	// Already owned:
-
-	
 	
     if (PrimaryWeapon == Weapon || SecondaryWeapon == Weapon)
     {
@@ -75,9 +71,12 @@ void AValorantPlayerStateBase::BuyWeapon_Implementation(UWeaponData* Weapon)
 	PurchaseDelegate.Broadcast(Money); // Hud update delegate
 	
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Purchased"); 
+	
+	GetNewWeapon(Weapon); 
+}
 
-
-
+void AValorantPlayerStateBase::GetNewWeapon_Implementation(UWeaponData* Weapon)
+{
 	if (AValorantPlayerBase* PlayerBase =  GetPawn<AValorantPlayerBase>())
 	{
 		// Equip Purchased Weapon 
@@ -101,15 +100,9 @@ void AValorantPlayerStateBase::BuyWeapon_Implementation(UWeaponData* Weapon)
 			SecondaryWeapon = Weapon;
 		}
 	}
-
-	
-
 	
 
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Weapon Added");
-
 }
-
-
 
 

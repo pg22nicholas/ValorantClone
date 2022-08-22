@@ -2,16 +2,18 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "CoreMinimal.h" 
 #include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "Weapon/DroppedWeapon.h"
 #include "Weapon/WeaponData.h"
 #include "ValorantPlayerBase.generated.h"
 
 class UChildActorComponent; 
 class UPlayerWidget;
-class UWeaponData; 
+class UWeaponData;
+
 UCLASS()
 class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagingInterface
 {
@@ -67,8 +69,14 @@ public:
 	float Health = 100.0f;
 
 	UFUNCTION(Server, Reliable)
-	void DropWeapon ( UWeaponData* WeaponData); 
+	void DropWeapon ( UWeaponData* WeaponData);
 	
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void PickUp ();
+
+	UPROPERTY(EditAnywhere)
+	UWeaponData* PickUpWeaponData; 
+
 protected:
 
 	UFUNCTION(Server, Reliable)
@@ -102,7 +110,13 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+	
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)  
+	TSubclassOf<ADroppedWeapon> DroppedWeapon; 
 
+
+	
 	UPROPERTY()
 	UPlayerWidget* PlayerWidget;
 };

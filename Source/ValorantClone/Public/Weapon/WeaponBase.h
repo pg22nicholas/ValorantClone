@@ -10,6 +10,7 @@ class UStaticMeshComponent;
 class UArrowComponent;
 class USceneComponent;
 class UWeaponData;
+class USphereComponent;
 
 UCLASS( Abstract, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VALORANTCLONE_API AWeaponBase : public AActor  
@@ -34,7 +35,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent * WeaponMesh;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool Firing;
 	
@@ -57,7 +58,8 @@ protected:
 	UPlayerWidget* PlayerWidget;
 	
 	UPROPERTY()
-	FTimerHandle TimerHandle;  
+	FTimerHandle TimerHandle;
+	
 	// UFUNCTION(Server, Reliable)
 	// virtual void Reload();
 	//

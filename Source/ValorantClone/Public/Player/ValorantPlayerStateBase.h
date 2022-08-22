@@ -10,8 +10,6 @@
 UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPurchaseEvent, int32, Money);
 
-UDELEGATE()
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponSwitchEvent, FText, CurAmmoName);
 /**
  * 
  */
@@ -53,11 +51,11 @@ public:
 	UPROPERTY()
 	FPurchaseEvent PurchaseDelegate;
 
-	UPROPERTY()
-	FWeaponSwitchEvent WeaponSwitchDelegate;
-
 	UFUNCTION(Server, Reliable,BlueprintCallable)
 	void SwitchWeapon();
+
+	UFUNCTION(Server, Reliable,BlueprintCallable)
+	void GetNewWeapon(UWeaponData* WeaponData); 
 	
 private:
 	

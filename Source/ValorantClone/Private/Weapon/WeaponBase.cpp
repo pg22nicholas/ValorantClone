@@ -7,6 +7,7 @@
 #include "Components/SceneComponent.h"
 #include "Weapon/WeaponData.h"
 #include "PlayerWidget.h"
+#include "Components/SphereComponent.h"
 #include "ValorantHUD.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/HUD.h"
@@ -30,6 +31,8 @@ AWeaponBase::AWeaponBase()
 
 	Barrel = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
 	Barrel->SetupAttachment(WeaponMesh);
+
+	
 }
 
 void AWeaponBase::Fire()
@@ -98,6 +101,7 @@ void AWeaponBase::Reload()
 	PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(WeaponData->CurrentProjectileNum)); 
 }
 
+
 void AWeaponBase::Equip()
 {
 	PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(WeaponData->AllAmmo));  
@@ -131,7 +135,9 @@ void AWeaponBase::BeginPlay()
 	PlayerWidget = Widget;
 
 	PlayerWidget->MagazineText->SetText(FText::AsNumber(WeaponData->Magazine));
-	PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(WeaponData->AllAmmo)); 
+	PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(WeaponData->AllAmmo));
+	
+	
 }
 
 

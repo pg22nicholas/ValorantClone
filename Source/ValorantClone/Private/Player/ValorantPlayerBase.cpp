@@ -64,6 +64,7 @@ void AValorantPlayerBase::BeginPlay()
 	PlayerWidget->MaxHealthText->SetText(FText::AsNumber(Max_Health)); 
 }
 
+
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -77,7 +78,8 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AValorantPlayerBase::Shoot); 
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AValorantPlayerBase::StopShooting); 
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AValorantPlayerBase::Reload);  
-
+	PlayerInputComponent->BindAction("PickUp", IE_Pressed, this, &AValorantPlayerBase::PickUp);
+	
 	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &AValorantPlayerBase::SwitchWeapon);  
  
 	// Bind movement events
@@ -147,6 +149,16 @@ void AValorantPlayerBase::Reload_Implementation()
 	}
 }
 
+void AValorantPlayerBase::PickUp_Implementation()
+{
+	if (!PickUpWeaponData) return;
+
+	if (AValorantPlayerStateBase* ValorantState =  GetPlayerState<AValorantPlayerStateBase>())
+	{
+		ValorantState->GetNewWeapon(PickUpWeaponData);
+	}
+}
+
 void AValorantPlayerBase::SwitchWeapon_Implementation()  
 {
 	AValorantPlayerStateBase* ValorantState = GetPlayerState<AValorantPlayerStateBase>();
@@ -176,18 +188,16 @@ void AValorantPlayerBase::DropWeapon_Implementation(UWeaponData* WeaponData)
 
 	if (AWeaponBase* WeaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
-		WeaponBase->WeaponData = WeaponData;
-		WeaponBase->WeaponMesh->SetSimulatePhysics(true);  
 
 		FTransform SpawnTransform = GetTransform();
 		FActorSpawnParameters SpawnParams;
 		
-		FVector Location(0.0f, 0.0f, 0.0f);
-		FRotator Rotation(0.0f, 0.0f, 0.0f);
 	
 		GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Spawned Old Weapon") ;    
-	
-		GetWorld()->SpawnActor<AWeaponBase>(WeaponBase->GetClass(), SpawnTransform, SpawnParams);     
+		
+		GetWorld()->SpawnActor<ADroppedWeapon>(DroppedWeapon, SpawnTransform, SpawnParams)->WeaponData = WeaponData; 
+
+		
 	}
 	
 }
