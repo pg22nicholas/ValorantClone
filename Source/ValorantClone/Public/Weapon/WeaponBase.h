@@ -20,7 +20,7 @@ public:
 	// Sets default values for this component's properties
 	AWeaponBase();
 
-	virtual void Fire() PURE_VIRTUAL(AWeaponBase::FireLogic, );
+	virtual void Fire() PURE_VIRTUAL(AWeaponBase::Fire, );
 
 protected:
 	// Called when the game starts
