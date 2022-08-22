@@ -75,6 +75,7 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AValorantPlayerBase::Shoot); 
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AValorantPlayerBase::StopShooting); 
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AValorantPlayerBase::Reload);  
 
 	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &AValorantPlayerBase::SwitchWeapon);  
@@ -115,7 +116,21 @@ void AValorantPlayerBase::Shoot_Implementation()
 	
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor())) 
 	{
+		weaponBase->Firing = true; 
 		weaponBase->Fire(); 
+	}
+}
+
+void AValorantPlayerBase::StopShooting_Implementation() 
+{
+	
+	if (Weapon == nullptr) return;  
+	
+	if (Weapon->GetClass() == nullptr) return; 
+	
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor())) 
+	{
+		weaponBase->StopFiring();  
 	}
 }
 

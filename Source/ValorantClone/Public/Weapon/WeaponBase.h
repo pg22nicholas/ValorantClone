@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Fire();
 
+	UFUNCTION(BlueprintCallable)
+	void StopFiring();
+	
 	UFUNCTION(BlueprintCallable) 
 	void Reload();
 
@@ -32,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent * WeaponMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool Firing;
+	
 	UFUNCTION()
 	void Equip();
 protected:

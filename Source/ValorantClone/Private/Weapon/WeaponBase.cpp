@@ -61,9 +61,17 @@ void AWeaponBase::Fire()
 	
 	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,SpawnTransform, SpawnParams);
 
-	if (WeaponData->Automatic)
+	if (WeaponData->Automatic && Firing) 
 	{
 		GetWorldTimerManager().SetTimer( TimerHandle, this, &AWeaponBase::Fire, WeaponData->Rate, false);
+	}
+}
+
+void AWeaponBase::StopFiring()
+{
+	if (WeaponData->Automatic)
+	{
+		Firing = false;
 	}
 }
 

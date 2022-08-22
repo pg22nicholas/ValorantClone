@@ -9,7 +9,7 @@
 
 void AValorantHUD::BeginPlay()
 {
-	Super::BeginPlay();
+	Super::BeginPlay(); 
 	
 	UWorld * world = GetWorld();
 	if (!world) return;
@@ -22,16 +22,17 @@ void AValorantHUD::BeginPlay()
 		PlayerWidget = CreateWidget<UPlayerWidget>(GetOwningPlayerController(), PlayerWidgetClass, TEXT ("PlayerWidget"));
 		ShopScreen = CreateWidget<UShopScreen>(GetOwningPlayerController(), ShopScreenClass, TEXT ("STORE"));
 		PlayerWidget->AddToViewport(5); 
-	}
+	} 
 }
 
 AValorantHUD::AValorantHUD()
 {
+
 } 
 
-void AValorantHUD::DrawHUD()
+void AValorantHUD::DrawHUD() 
 {
-	Super::DrawHUD();  
+	Super::DrawHUD();
 	
 }
 

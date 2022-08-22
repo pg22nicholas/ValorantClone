@@ -73,6 +73,9 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void Shoot();
 
+	UFUNCTION(Server, Reliable)
+	void StopShooting();
+
 	UFUNCTION(Server, Reliable, BlueprintCallable) 
 	void Reload();
 
@@ -99,3 +102,5 @@ protected:
 	UPROPERTY()
 	UPlayerWidget* PlayerWidget;
 };
+
+
