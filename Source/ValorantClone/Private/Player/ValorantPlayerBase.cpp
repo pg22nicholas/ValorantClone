@@ -151,12 +151,21 @@ void AValorantPlayerBase::Reload_Implementation()
 
 void AValorantPlayerBase::PickUp_Implementation()
 {
-	if (!PickUpWeaponData) return;
+	if (!PickUpWeapon) return;
+	if (!PickUpWeapon->WeaponData) return;
 
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
+	{
+		if (weaponBase->WeaponData == PickUpWeapon->WeaponData) return;
+	}
+	
 	if (AValorantPlayerStateBase* ValorantState =  GetPlayerState<AValorantPlayerStateBase>())
 	{
-		ValorantState->GetNewWeapon(PickUpWeaponData);
+		
+		ValorantState->GetNewWeapon(PickUpWeapon->WeaponData); 
 	}
+	
+	PickUpWeapon->PickedUp();     
 }
 
 void AValorantPlayerBase::SwitchWeapon_Implementation()  

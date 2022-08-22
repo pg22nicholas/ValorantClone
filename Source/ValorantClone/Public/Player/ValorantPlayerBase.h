@@ -74,8 +74,8 @@ public:
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 	void PickUp ();
 
-	UPROPERTY(EditAnywhere)
-	UWeaponData* PickUpWeaponData; 
+	UPROPERTY(EditAnywhere) 
+	ADroppedWeapon* PickUpWeapon;  
 
 protected:
 

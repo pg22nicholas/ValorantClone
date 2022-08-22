@@ -12,22 +12,29 @@ ADroppedWeapon::ADroppedWeapon()
 	SphereCollision->SetupAttachment(WeaponMesh); 
 }
 
-void ADroppedWeapon::AllowPickUp(UPrimitiveComponent* OverlappedComponent, 
+void ADroppedWeapon::PickedUp()
+{
+	// maybe Sound
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "Picked  Up");  
+	
+}
+
+void ADroppedWeapon::AllowPickUp_Implementation(UPrimitiveComponent* OverlappedComponent, 
                                  AActor* OtherActor, 
                                  UPrimitiveComponent* OtherComp, 
                                  int32 OtherBodyIndex, 
                                  bool bFromSweep, 
-                                 const FHitResult &SweepResult)
+                                 const FHitResult &SweepResult) 
 {
 	if (AValorantPlayerBase * PlayerBase = Cast<AValorantPlayerBase>(OtherActor))
 	{
-		PlayerBase->PickUpWeaponData = WeaponData;
+		PlayerBase->PickUpWeapon = this;
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "Allow Pick Up");  
 	}
 	
 }
 
-void ADroppedWeapon::DisAllowPickUp(UPrimitiveComponent* OverlappedComp,
+void ADroppedWeapon::DisAllowPickUp_Implementation(UPrimitiveComponent* OverlappedComp,
 									AActor* OtherActor,
 									UPrimitiveComponent* OtherComp,
 									int32 OtherBodyIndex) 
@@ -35,8 +42,9 @@ void ADroppedWeapon::DisAllowPickUp(UPrimitiveComponent* OverlappedComp,
 
 	if (AValorantPlayerBase * PlayerBase = Cast<AValorantPlayerBase>(OtherActor))
 	{
-		PlayerBase->PickUpWeaponData = nullptr;
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "DisAllow Pick Up"); 
+		PlayerBase->PickUpWeapon = nullptr; 
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "DisAllow Pick Up");
+		ADroppedWeapon::K2_DestroyActor();     
 	}
 
 	
@@ -49,5 +57,8 @@ void ADroppedWeapon::BeginPlay()
 	
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ADroppedWeapon::AllowPickUp);
 
-	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &ADroppedWeapon::DisAllowPickUp); 
+	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &ADroppedWeapon::DisAllowPickUp);
+	
+	bReplicates = true; 
+	//ADroppedWeapon::K2_DestroyActor();  
 }

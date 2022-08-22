@@ -44,7 +44,7 @@ void UShopScreen::NativeOnInitialized()
 	
 }
 
-void UShopScreen::PurchasePrimaryWeapon()
+void UShopScreen::PurchasePrimaryWeapon_Implementation()
 {
 
 	UWorld * world = GetWorld();
@@ -59,7 +59,7 @@ void UShopScreen::PurchasePrimaryWeapon()
 	}
 }
 
-void UShopScreen::PurchaseSecondaryWeapon()
+void UShopScreen::PurchaseSecondaryWeapon_Implementation()
 {
 	UWorld * world = GetWorld();
 	if (!world) return;

@@ -17,6 +17,8 @@ void UPlayerWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
+ 
+	
 	UWorld * World = GetWorld();
 	if (!World) return;
 

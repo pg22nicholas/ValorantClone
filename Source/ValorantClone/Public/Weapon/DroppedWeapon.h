@@ -22,19 +22,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USphereComponent* SphereCollision;
 
-	UFUNCTION(BlueprintCallable)
+    UFUNCTION (BlueprintCallable)
+    void PickedUp();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void AllowPickUp(UPrimitiveComponent* OverlappedComponent, 
 					  AActor* OtherActor, 
 					  UPrimitiveComponent* OtherComp, 
 					  int32 OtherBodyIndex, 
 					  bool bFromSweep, 
 					  const FHitResult &SweepResult);
-
-	UFUNCTION(BlueprintCallable) 
+					  
+	UFUNCTION(BlueprintCallable,Server, Reliable)
 	void DisAllowPickUp(UPrimitiveComponent* OverlappedComp,
 						AActor* OtherActor,
 						UPrimitiveComponent* OtherComp,
-						int32 OtherBodyIndex);  
+						int32 OtherBodyIndex); 
 
 	virtual void BeginPlay() override;
 };

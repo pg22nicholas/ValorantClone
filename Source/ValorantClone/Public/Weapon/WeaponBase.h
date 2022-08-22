@@ -54,7 +54,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USceneComponent* Barrel;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)   
 	UPlayerWidget* PlayerWidget;
 	
 	UPROPERTY()
