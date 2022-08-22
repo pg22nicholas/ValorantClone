@@ -3,26 +3,34 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SceneComponent.h"
+#include "Engine/DataTable.h"
 #include "AbilityBase.generated.h"
 
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class VALORANTCLONE_API UAbilityBase : public USceneComponent
+// This class does not need to be modified.
+UCLASS(Abstract)
+class VALORANTCLONE_API AAbilityBase : public AActor
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	UAbilityBase();
+	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+public:
+
+	DECLARE_DELEGATE(FAbiltiyEndSignature)
+	FAbiltiyEndSignature AbilityEnd;
+ 
+	DECLARE_DELEGATE(FAbiltiyCancelSignature)
+	FAbiltiyCancelSignature AbilityCancel;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UDataTable* AbilityData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	uint8 AbilityDataTableIndex = 0;
+
+	virtual void StartAbility() PURE_VIRTUAL(AAbilityBase::StartAbility,);
+	virtual void EndAbility() PURE_VIRTUAL(AAbilityBase::EndAbility,);
+	virtual bool CancelAbility() PURE_VIRTUAL(AAbilityBase::CancelAbility, return false; );
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
+	bool bOnCooldown = false;
 };
