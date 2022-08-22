@@ -4,3 +4,7 @@
 #include "Ability/AbilityBase.h"
 
 // Add default functionality here for any IAbilityInterface functions that are not pure virtual.
+void AAbilityBase::StartAbility(APlayerController* controller)
+{
+	CachedPlayerController = MakeWeakObjectPtr(controller);
+}

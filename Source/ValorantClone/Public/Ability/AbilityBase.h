@@ -27,7 +27,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	uint8 AbilityDataTableIndex = 0;
 
-	virtual void StartAbility() PURE_VIRTUAL(AAbilityBase::StartAbility,);
+	// Player controller of player that initiated this ability
+	UPROPERTY()
+	TWeakObjectPtr<APlayerController> CachedPlayerController;
+
+	virtual void StartAbility(APlayerController* controller);
 	virtual void EndAbility() PURE_VIRTUAL(AAbilityBase::EndAbility,);
 	virtual bool CancelAbility() PURE_VIRTUAL(AAbilityBase::CancelAbility, return false; );
 
