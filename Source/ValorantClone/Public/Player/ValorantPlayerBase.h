@@ -85,4 +85,14 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+private:
+	void OnAbility1Pressed();
+	void OnAbility1Released();
+
+	void OnAbility2Pressed();
+	void OnAbility2Released();
+
+	void OnUltimatePressed();
+	void OnUltimateReleased();
+
 };

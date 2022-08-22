@@ -64,12 +64,18 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AValorantPlayerBase::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AValorantPlayerBase::MoveRight);
-	
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
-	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
+
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	
+	PlayerInputComponent->BindAction("Ability1", IE_Pressed, this, &AValorantPlayerBase::OnAbility1Pressed);
+	PlayerInputComponent->BindAction("Ability1", IE_Released, this, &AValorantPlayerBase::OnAbility1Released);
+
+	PlayerInputComponent->BindAction("Ability2", IE_Pressed, this, &AValorantPlayerBase::OnAbility2Pressed);
+	PlayerInputComponent->BindAction("Ability2", IE_Released, this, &AValorantPlayerBase::OnAbility2Released);
+
+	PlayerInputComponent->BindAction("Ultimate", IE_Pressed, this, &AValorantPlayerBase::OnUltimatePressed);
+	PlayerInputComponent->BindAction("Ultimate", IE_Released, this, &AValorantPlayerBase::OnUltimateReleased);
 }
 
 void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
@@ -114,6 +120,36 @@ void AValorantPlayerBase::MoveRight(float Value)
 		// Add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
 	}
+}
+
+void AValorantPlayerBase::OnAbility1Pressed()
+{
+	// TODO:
+}
+
+void AValorantPlayerBase::OnAbility1Released()
+{
+	// TODO:
+}
+
+void AValorantPlayerBase::OnAbility2Pressed()
+{
+	// TODO:
+}
+
+void AValorantPlayerBase::OnAbility2Released()
+{
+	// TODO:
+}
+
+void AValorantPlayerBase::OnUltimatePressed()
+{
+	// TODO:
+}
+
+void AValorantPlayerBase::OnUltimateReleased()
+{
+	// TODO:
 }
 
 
