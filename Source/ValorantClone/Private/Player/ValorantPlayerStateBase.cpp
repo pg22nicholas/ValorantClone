@@ -14,26 +14,17 @@ AValorantPlayerStateBase::AValorantPlayerStateBase()
 
 void AValorantPlayerStateBase::SwitchWeapon_Implementation()
 {
-	const int& ListLength =  OwnedWeapons.Num();
-	if (ListLength <= 1 ) return;
+	if (!PrimaryWeapon && SecondaryWeapon) return;
 	
-    for (int i = 0; i < ListLength; i++)
-    {
-	    if (OwnedWeapons[i] == CurrentWeapon)
-	    {
-		    if (i+1 < ListLength) 
-		    {
-			    CurrentWeapon = OwnedWeapons[i+1];
-		    	return;
-		    }
-	    	else
-	    	{
-	    		CurrentWeapon =  OwnedWeapons[0];
-	    		return;
-	    	}
-	    }
-    	
-    }
+	if (PrimaryWeapon == CurrentWeapon)
+	{
+		CurrentWeapon = SecondaryWeapon;
+	}
+	else CurrentWeapon = PrimaryWeapon;
+		
+
+	
+	
 	
 }
 
@@ -49,13 +40,13 @@ void AValorantPlayerStateBase::BeginPlay()
 	{
 		if (!weaponBase->WeaponData) return; 
 		
-		OwnedWeapons.Add(weaponBase->WeaponData);   
+		if (weaponBase->WeaponData->PrimaryWeapon)
+		{
+			PrimaryWeapon = weaponBase->WeaponData;
+		}
+		else SecondaryWeapon = weaponBase->WeaponData;
 	}
 	
-	if (OwnedWeapons.Num() > 0) 
-	{
-		CurrentWeapon = OwnedWeapons[0];  
-	}
 }
 
 void AValorantPlayerStateBase::BuyWeapon_Implementation(UWeaponData* Weapon)
@@ -68,14 +59,15 @@ void AValorantPlayerStateBase::BuyWeapon_Implementation(UWeaponData* Weapon)
 	}
 
 	// Already owned:
-    for (auto OwnedWeapon : OwnedWeapons) 
+
+	
+	
+    if (PrimaryWeapon == Weapon || SecondaryWeapon == Weapon)
     {
-	    if (OwnedWeapon == Weapon)
-	    {
-	    	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Weapon Exists"); 
-		    return;
-	    }
+	    GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Weapon Exists"); 
+	    return;
     }
+    
 	
 	// Money decrement
 	Money-=Weapon->WeaponPrice;
@@ -85,8 +77,34 @@ void AValorantPlayerStateBase::BuyWeapon_Implementation(UWeaponData* Weapon)
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Purchased"); 
 
 
-	// Add Weapon to collection
-	OwnedWeapons.Add(Weapon);
+
+	if (AValorantPlayerBase* PlayerBase =  GetPawn<AValorantPlayerBase>())
+	{
+		// Equip Purchased Weapon 
+		if (AWeaponBase* weaponBase = Cast<AWeaponBase>(PlayerBase->Weapon->GetChildActor())) 
+		{
+			weaponBase->WeaponData = Weapon; 
+		}
+		
+		// Drop Previous Weapon
+		// Add Weapon to collection
+		if (Weapon->PrimaryWeapon)
+		{
+			if (PrimaryWeapon)
+				PlayerBase->DropWeapon(PrimaryWeapon);
+			PrimaryWeapon = Weapon;
+		}
+		else
+		{
+			if (SecondaryWeapon)
+				PlayerBase->DropWeapon(SecondaryWeapon); 
+			SecondaryWeapon = Weapon;
+		}
+	}
+
+	
+
+	
 
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Weapon Added");
 

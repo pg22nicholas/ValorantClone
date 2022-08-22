@@ -36,6 +36,7 @@ void AWeaponBase::Fire()
 {
 	APawn* instigator = Cast<APawn>(GetParentActor());
 	if (!instigator) return;
+	if (!WeaponData) return;
 	
 	if (WeaponData->CurrentProjectileNum <= 0)
 	{
@@ -69,7 +70,8 @@ void AWeaponBase::Fire()
 
 void AWeaponBase::StopFiring()
 {
-	if (WeaponData->Automatic)
+	if (!WeaponData) return; 
+	if (WeaponData->Automatic) 
 	{
 		Firing = false;
 	}

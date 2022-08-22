@@ -6,11 +6,12 @@
 #include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "Weapon/WeaponData.h"
 #include "ValorantPlayerBase.generated.h"
 
 class UChildActorComponent; 
 class UPlayerWidget;
-
+class UWeaponData; 
 UCLASS()
 class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagingInterface
 {
@@ -64,6 +65,9 @@ public:
 	
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite) 
 	float Health = 100.0f;
+
+	UFUNCTION(Server, Reliable)
+	void DropWeapon ( UWeaponData* WeaponData); 
 	
 protected:
 

@@ -169,6 +169,29 @@ void AValorantPlayerBase::SwitchWeapon_Implementation()
 	}
 }
 
+void AValorantPlayerBase::DropWeapon_Implementation(UWeaponData* WeaponData)
+{
+	AValorantPlayerStateBase* ValorantState = GetPlayerState<AValorantPlayerStateBase>();
+	if (!ValorantState) return;
+
+	if (AWeaponBase* WeaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
+	{
+		WeaponBase->WeaponData = WeaponData;
+		WeaponBase->WeaponMesh->SetSimulatePhysics(true);  
+
+		FTransform SpawnTransform = GetTransform();
+		FActorSpawnParameters SpawnParams;
+		
+		FVector Location(0.0f, 0.0f, 0.0f);
+		FRotator Rotation(0.0f, 0.0f, 0.0f);
+	
+		GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Spawned Old Weapon") ;    
+	
+		GetWorld()->SpawnActor<AWeaponBase>(WeaponBase->GetClass(), SpawnTransform, SpawnParams);     
+	}
+	
+}
+
 void AValorantPlayerBase::MoveForward(float Value)
 {
 	if (Value != 0.0f)

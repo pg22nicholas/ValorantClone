@@ -39,8 +39,11 @@ public:
 	void BuyWeapon(UWeaponData* Weapon);  
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
-	TArray<UWeaponData*> OwnedWeapons;
+	UWeaponData* PrimaryWeapon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)  
+	UWeaponData* SecondaryWeapon;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)  
 	UWeaponData* CurrentWeapon;
 	
