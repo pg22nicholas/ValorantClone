@@ -3,15 +3,54 @@
 
 #include "Ability/BasicAOEDamageAbility.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
+
 void ABasicAOEDamageAbility::StartAbility(APlayerController* controller)
 {
 	Super::StartAbility(controller);
-	// TODO:
+	TimeOnHoldStart = GetGameTimeSinceCreation();
+	UWorld* world = GetWorld();
+	if (!world) return;
+
+	world->GetTimerManager().SetTimer(HoldTimerHandle, this, &ABasicAOEDamageAbility::EndAbility, HoldTime, false);
 }
 
 void ABasicAOEDamageAbility::EndAbility()
 {
-	// TODO:
+	UWorld* world = GetWorld();
+	if (!world) return;
+
+	if (!CachedPlayerController.IsValid()) return;
+	
+	FVector ViewportLocation;
+	FRotator ViewportRotation;
+	CachedPlayerController->GetPlayerViewPoint(OUT ViewportLocation, OUT ViewportRotation);
+	FVector EndCast = ViewportLocation + ViewportRotation.Vector() * 10000;
+
+	world->GetTimerManager().ClearTimer(HoldTimerHandle);
+	float TimeHeld = GetGameTimeSinceCreation() - TimeOnHoldStart;
+	float PercentOfMaxHeld = UKismetMathLibrary::Min(TimeHeld / HoldTime, 1);
+	float damageToApply = MaxDamage * PercentOfMaxHeld;
+	
+	FHitResult HitResult;
+	if (UKismetSystemLibrary::LineTraceSingleForObjects(world, ViewportLocation, EndCast, LineCastType,
+		false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, HitResult, true))
+	{
+		FVector HitLocation = HitResult.Location;
+		TArray<AActor*> ActorsToIgnore;
+		ActorsToIgnore.Add(CachedPlayerController->GetPawn());
+		TArray<AActor*> HitActors;
+		UKismetSystemLibrary::SphereOverlapActors(world, HitLocation, Radius, SphereCastType, nullptr, ActorsToIgnore, HitActors);
+		for (AActor* HitActor : HitActors)
+		{
+			UDamageType damageType;
+			UGameplayStatics::ApplyDamage(HitActor, damageToApply, CachedPlayerController.Get(), this, UDamageType::StaticClass());
+			UGameplayStatics::ApplyDamage(HitActor, 0, CachedPlayerController.Get(), this, StunDamageType);
+			UGameplayStatics::ApplyDamage(HitActor, 0, CachedPlayerController.Get(), this, KnockBackDamageType);
+		}
+	}
 }
 
 bool ABasicAOEDamageAbility::CancelAbility()
