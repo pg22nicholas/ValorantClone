@@ -7,6 +7,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/GameSession.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/ValorantPlayerStateBase.h"
 #include "Weapon/WeaponBase.h"
@@ -134,32 +136,50 @@ void AValorantPlayerBase::MoveRight(float Value)
 
 void AValorantPlayerBase::OnAbility1Pressed()
 {
-	// TODO:
+	if (Abilities.Num() < 1) return;
+	StartAbility(Abilities[0]);
 }
 
 void AValorantPlayerBase::OnAbility1Released()
 {
-	// TODO:
+	if (Abilities.Num() < 1) return;
+	Abilities[0]->EndAbility();
 }
 
 void AValorantPlayerBase::OnAbility2Pressed()
 {
-	// TODO:
+	if (Abilities.Num() < 2) return;
+	StartAbility(Abilities[1]);
 }
 
 void AValorantPlayerBase::OnAbility2Released()
 {
-	// TODO:
+	if (Abilities.Num() < 2) return;
+	Abilities[1]->EndAbility();
 }
 
 void AValorantPlayerBase::OnUltimatePressed()
 {
-	// TODO:
+	if (Abilities.Num() < 3) return;
+	StartAbility(Abilities[2]);
 }
 
 void AValorantPlayerBase::OnUltimateReleased()
 {
-	// TODO:
+	if (Abilities.Num() < 3) return;
+	Abilities[2]->EndAbility();
+}
+
+void AValorantPlayerBase::StartAbility(AAbilityBase* ability)
+{
+	if (Abilities.Num() < 1) return;
+	UWorld* world = GetWorld();
+	if (!world) return;
+	
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!PlayerController) return;
+	
+	ability->StartAbility(PlayerController);
 }
 
 

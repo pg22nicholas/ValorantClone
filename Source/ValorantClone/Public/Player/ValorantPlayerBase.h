@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Ability/AbilityBase.h"
 #include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
@@ -64,6 +65,9 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<AAbilityBase*> Abilities;
+
 	UFUNCTION(Server, Reliable)
 	void SetDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
@@ -97,5 +101,7 @@ private:
 
 	void OnUltimatePressed();
 	void OnUltimateReleased();
+
+	void StartAbility(AAbilityBase* ability);
 
 };
