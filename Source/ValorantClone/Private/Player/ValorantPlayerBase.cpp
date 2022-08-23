@@ -40,6 +40,8 @@ AValorantPlayerBase::AValorantPlayerBase()
 	
 	Weapon = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(MeshArms);
+
+	SkillManager = CreateDefaultSubobject<USkillManager>(TEXT("SkillManager"));
 }
 
 
@@ -136,50 +138,32 @@ void AValorantPlayerBase::MoveRight(float Value)
 
 void AValorantPlayerBase::OnAbility1Pressed()
 {
-	if (Abilities.Num() < 1) return;
-	StartAbility(Abilities[0]);
+	SkillManager->OnAbilityUsed(0);
 }
 
 void AValorantPlayerBase::OnAbility1Released()
 {
-	if (Abilities.Num() < 1) return;
-	Abilities[0]->EndAbility();
+	SkillManager->OnAbilityFinished(0);
 }
 
 void AValorantPlayerBase::OnAbility2Pressed()
 {
-	if (Abilities.Num() < 2) return;
-	StartAbility(Abilities[1]);
+	SkillManager->OnAbilityUsed(1);
 }
 
 void AValorantPlayerBase::OnAbility2Released()
 {
-	if (Abilities.Num() < 2) return;
-	Abilities[1]->EndAbility();
+	SkillManager->OnAbilityFinished(1);
 }
 
 void AValorantPlayerBase::OnUltimatePressed()
 {
-	if (Abilities.Num() < 3) return;
-	StartAbility(Abilities[2]);
+	SkillManager->OnAbilityUsed(2);
 }
 
 void AValorantPlayerBase::OnUltimateReleased()
 {
-	if (Abilities.Num() < 3) return;
-	Abilities[2]->EndAbility();
-}
-
-void AValorantPlayerBase::StartAbility(AAbilityBase* ability)
-{
-	if (Abilities.Num() < 1) return;
-	UWorld* world = GetWorld();
-	if (!world) return;
-	
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if (!PlayerController) return;
-	
-	ability->StartAbility(PlayerController);
+	SkillManager->OnAbilityFinished(2);
 }
 
 

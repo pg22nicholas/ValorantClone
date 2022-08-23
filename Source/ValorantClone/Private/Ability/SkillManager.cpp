@@ -3,6 +3,9 @@
 
 #include "Ability/SkillManager.h"
 
+#include "Ability/AbilityBase.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values for this component's properties
 USkillManager::USkillManager()
 {
@@ -23,5 +26,29 @@ void USkillManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+}
+
+void USkillManager::OnAbilityUsed(uint8 abilityIndex)
+{
+	if (Abilities.Num() < abilityIndex + 1) return;
+	UWorld* world = GetWorld();
+	if (!world) return;
+	
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!PlayerController) return;
+	
+	Abilities[abilityIndex]->StartAbility(PlayerController);
+}
+
+void USkillManager::OnAbilityFinished(uint8 abilityIndex)
+{
+	if (Abilities.Num() < abilityIndex + 1) return;
+	Abilities[abilityIndex]->EndAbility();
+}
+
+void USkillManager::OnAbilityCancelled(uint8 abilityIndex)
+{
+	if (Abilities.Num() < abilityIndex + 1) return;
+	Abilities[abilityIndex]->CancelAbility();
 }
 

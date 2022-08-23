@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Ability/AbilityBase.h"
+#include "Ability/SkillManager.h"
 #include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
@@ -49,6 +50,9 @@ public:
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* FireAnimation;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkillManager* SkillManager;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -64,9 +68,6 @@ public:
 	void KnockBack_Implementation(FVector knockBackForce) override;
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<AAbilityBase*> Abilities;
 
 	UFUNCTION(Server, Reliable)
 	void SetDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -101,7 +102,5 @@ private:
 
 	void OnUltimatePressed();
 	void OnUltimateReleased();
-
-	void StartAbility(AAbilityBase* ability);
 
 };
