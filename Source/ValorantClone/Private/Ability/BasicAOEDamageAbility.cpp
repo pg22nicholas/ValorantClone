@@ -14,11 +14,14 @@ void ABasicAOEDamageAbility::StartAbility(APlayerController* controller)
 	UWorld* world = GetWorld();
 	if (!world) return;
 
-	world->GetTimerManager().SetTimer(HoldTimerHandle, this, &ABasicAOEDamageAbility::EndAbility, HoldTime, false);
+	IsHolding = true;
 }
 
 void ABasicAOEDamageAbility::EndAbility()
 {
+	if (!IsHolding) return;
+
+	IsHolding = false;
 	UWorld* world = GetWorld();
 	if (!world) return;
 
@@ -39,13 +42,13 @@ void ABasicAOEDamageAbility::EndAbility()
 		false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, HitResult, true))
 	{
 		FVector HitLocation = HitResult.Location;
+		UKismetSystemLibrary::DrawDebugSphere(world, HitLocation, Radius, 12, FLinearColor::Blue, 5);
 		TArray<AActor*> ActorsToIgnore;
 		ActorsToIgnore.Add(CachedPlayerController->GetPawn());
 		TArray<AActor*> HitActors;
 		UKismetSystemLibrary::SphereOverlapActors(world, HitLocation, Radius, SphereCastType, nullptr, ActorsToIgnore, HitActors);
 		for (AActor* HitActor : HitActors)
 		{
-			UDamageType damageType;
 			UGameplayStatics::ApplyDamage(HitActor, damageToApply, CachedPlayerController.Get(), this, UDamageType::StaticClass());
 			UGameplayStatics::ApplyDamage(HitActor, 0, CachedPlayerController.Get(), this, StunDamageType);
 			UGameplayStatics::ApplyDamage(HitActor, 0, CachedPlayerController.Get(), this, KnockBackDamageType);

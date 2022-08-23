@@ -44,5 +44,6 @@ private:
 	float TimeOnHoldStart = 0;
 
 	FTimerHandle HoldTimerHandle;
+	bool IsHolding = false;
 	
 };
