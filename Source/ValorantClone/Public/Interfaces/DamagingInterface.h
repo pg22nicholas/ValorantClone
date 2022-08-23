@@ -13,17 +13,18 @@ class UDamagingInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
 class VALORANTCLONE_API IDamagingInterface
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
-
 public:
 
 	// TODO: Get team
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Damage Reaction")
+	void Stun(float stunDuration);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Damage Reaction")
+	void KnockBack(FVector knockBackForce);
 
 };

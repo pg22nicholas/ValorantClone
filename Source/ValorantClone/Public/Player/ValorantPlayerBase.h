@@ -55,9 +55,12 @@ protected:
 
 public:	
 	
-	
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite) 
 	float Health = 100.0f;
+	
+	void Stun_Implementation(float stunDuration) override;
+
+	void KnockBack_Implementation(FVector knockBackForce) override;
 
 protected:
 

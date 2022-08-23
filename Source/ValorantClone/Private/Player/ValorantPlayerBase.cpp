@@ -49,6 +49,16 @@ void AValorantPlayerBase::BeginPlay()
 	OnTakeAnyDamage.AddDynamic(this, &AValorantPlayerBase::SetDamage);
 }
 
+void AValorantPlayerBase::Stun_Implementation(float stunDuration)
+{
+	// TODO:
+}
+
+void AValorantPlayerBase::KnockBack_Implementation(FVector knockBackForce)
+{
+	// TODO:
+}
+
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
