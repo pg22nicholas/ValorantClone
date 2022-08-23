@@ -20,6 +20,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float KnockUpForce = 10.f; 
 
-	virtual float ProcessDamage(AActor* Owner, AValorantPlayerBase* HitCharacter, FVector HitLocation) override;
+	virtual float ProcessDamage(AActor* Owner, AValorantPlayerBase* HitCharacter, FVector HitLocation) const override;
 	
 };

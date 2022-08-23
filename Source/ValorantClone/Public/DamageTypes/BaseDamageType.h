@@ -21,6 +21,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=( ClampMin=0 ))
 	float DamageMultiplier = 1;
 
+	/**
+	 * Process the damage and return the damage multiplier from the hit
+	 * @param Owner			Character that caused this attack
+	 * @param HitCharacter	Player Character that was hit
+	 * @param HitLocation	Location the player was hit
+	 */
 	UFUNCTION()
-	virtual float ProcessDamage(AActor* Owner, AValorantPlayerBase* HitCharacter, FVector HitLocation);
+	virtual float ProcessDamage(AActor* Owner, AValorantPlayerBase* HitCharacter, FVector HitLocation) const;
 };

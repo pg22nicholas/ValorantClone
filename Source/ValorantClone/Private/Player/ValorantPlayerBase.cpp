@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "DamageTypes/BaseDamageType.h"
 #include "GameFramework/GameSession.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -95,7 +96,12 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 	AController* InstigatedBy, AActor* DamageCauser)
 {
-	Health -= Damage;
+	const UBaseDamageType* BaseDamageType = Cast<UBaseDamageType>(DamageType);
+	if (BaseDamageType)
+	{
+		float DamageMultiplier = BaseDamageType->ProcessDamage(DamageCauser, this, GetActorLocation());
+		Health -= Damage * DamageMultiplier;
+	}
 
 	if (Health <= 0)
 	{
