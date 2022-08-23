@@ -18,7 +18,26 @@ USkillManager::USkillManager()
 void USkillManager::BeginPlay()
 {
 	Super::BeginPlay();
+	InitiateAbilities();
+}
 
+void USkillManager::InitiateAbilities_Implementation()
+{
+	for (int i = 0; i < MaxNumberAbilities; i++)
+	{
+		InitiateAbilityHelper(i);
+	}
+}
+
+void USkillManager::InitiateAbilityHelper(uint8 index)
+{
+	if (index >= AbilityTypes.Num()) return;
+	AAbilityBase* ability = GetWorld()->SpawnActor<AAbilityBase>(AbilityTypes[0]);
+	if (ability)
+	{
+		ability->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepRelativeTransform);
+		Abilities.Add(ability);
+	}
 }
 
 // Called every frame
@@ -30,7 +49,7 @@ void USkillManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 
 void USkillManager::OnAbilityUsed(uint8 abilityIndex)
 {
-	if (Abilities.Num() < abilityIndex + 1) return;
+	if (abilityIndex >= AbilityTypes.Num()) return;
 	UWorld* world = GetWorld();
 	if (!world) return;
 	
@@ -42,13 +61,15 @@ void USkillManager::OnAbilityUsed(uint8 abilityIndex)
 
 void USkillManager::OnAbilityFinished(uint8 abilityIndex)
 {
-	if (Abilities.Num() < abilityIndex + 1) return;
+	if (abilityIndex >= AbilityTypes.Num()) return;
 	Abilities[abilityIndex]->EndAbility();
 }
 
 void USkillManager::OnAbilityCancelled(uint8 abilityIndex)
 {
-	if (Abilities.Num() < abilityIndex + 1) return;
+	if (abilityIndex >= AbilityTypes.Num()) return;
 	Abilities[abilityIndex]->CancelAbility();
 }
+
+
 

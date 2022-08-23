@@ -18,7 +18,10 @@ public:
 	USkillManager();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<AAbilityBase*> Abilities;
+	TArray<TSubclassOf<AAbilityBase>> AbilityTypes;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	uint8 MaxNumberAbilities = 3;
 
 protected:
 	// Called when the game starts
@@ -32,5 +35,12 @@ public:
 	void OnAbilityFinished(uint8 abilityIndex);
 	void OnAbilityCancelled(uint8 abilityIndex);
 
+private:
+	TArray<AAbilityBase*> Abilities;
+
+	UFUNCTION(Server, Reliable)
+	void InitiateAbilities();
+
+	void InitiateAbilityHelper(uint8 index);
 		
 };
