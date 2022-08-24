@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Ability/AbilityBase.h"
+#include "Ability/SkillManager.h"
 #include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
@@ -48,6 +50,9 @@ public:
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* FireAnimation;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkillManager* SkillManager;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -55,14 +60,20 @@ protected:
 
 public:	
 	
-	
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite) 
 	float Health = 100.0f;
+
+	UFUNCTION()
+	void Stun_Implementation(float stunDuration) override;
+
+	UFUNCTION()
+	void KnockBack_Implementation(FVector knockBackForce) override;
 
 protected:
 
 	UFUNCTION(Server, Reliable)
-	void SetDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void SetDamagePoint(AActor* DamagedActor, float Damage, class AController* InstigatedBy, FVector HitLocation,
+		UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
 
 	UFUNCTION(Server, Reliable)
 	void Shoot();
@@ -84,5 +95,27 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+
+private:
+	UFUNCTION(Server, Reliable)
+	void OnAbility1Pressed();
+	UFUNCTION(Server, Reliable)
+	void OnAbility1Released();
+
+	UFUNCTION(Server, Reliable)
+	void OnAbility2Pressed();
+	UFUNCTION(Server, Reliable)
+	void OnAbility2Released();
+
+	UFUNCTION(Server, Reliable)
+	void OnUltimatePressed();
+	UFUNCTION(Server, Reliable)
+	void OnUltimateReleased();
+
+	bool IsStun = false;
+	FTimerHandle StunTimerHandle;
+	void EndStun();
+
+	const float PlayerMass = 200;
 
 };

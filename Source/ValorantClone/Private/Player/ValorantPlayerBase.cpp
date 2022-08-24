@@ -7,6 +7,10 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "DamageTypes/BaseDamageType.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameSession.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/ValorantPlayerStateBase.h"
 #include "Weapon/WeaponBase.h"
@@ -38,6 +42,8 @@ AValorantPlayerBase::AValorantPlayerBase()
 	
 	Weapon = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(MeshArms);
+
+	SkillManager = CreateDefaultSubobject<USkillManager>(TEXT("SkillManager"));
 }
 
 
@@ -46,7 +52,26 @@ AValorantPlayerBase::AValorantPlayerBase()
 void AValorantPlayerBase::BeginPlay()
 {
 	Super::BeginPlay();
-	OnTakeAnyDamage.AddDynamic(this, &AValorantPlayerBase::SetDamage);
+	OnTakePointDamage.AddDynamic(this, &AValorantPlayerBase::SetDamagePoint);
+}
+
+void AValorantPlayerBase::Stun_Implementation(float stunDuration)
+{
+	if (IsStun) return;
+	
+	IsStun = true;
+	UWorld* world = GetWorld();
+	world->GetTimerManager().SetTimer(StunTimerHandle, this, &AValorantPlayerBase::EndStun, stunDuration, false);
+}
+
+void AValorantPlayerBase::EndStun()
+{
+	IsStun = false;
+}
+
+void AValorantPlayerBase::KnockBack_Implementation(FVector knockBackForce)
+{
+	GetCharacterMovement()->AddImpulse(knockBackForce * PlayerMass);
 }
 
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -64,18 +89,30 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AValorantPlayerBase::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AValorantPlayerBase::MoveRight);
-	
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
-	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
+
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	
+	PlayerInputComponent->BindAction("Ability1", IE_Pressed, this, &AValorantPlayerBase::OnAbility1Pressed);
+	PlayerInputComponent->BindAction("Ability1", IE_Released, this, &AValorantPlayerBase::OnAbility1Released);
+
+	PlayerInputComponent->BindAction("Ability2", IE_Pressed, this, &AValorantPlayerBase::OnAbility2Pressed);
+	PlayerInputComponent->BindAction("Ability2", IE_Released, this, &AValorantPlayerBase::OnAbility2Released);
+
+	PlayerInputComponent->BindAction("Ultimate", IE_Pressed, this, &AValorantPlayerBase::OnUltimatePressed);
+	PlayerInputComponent->BindAction("Ultimate", IE_Released, this, &AValorantPlayerBase::OnUltimateReleased);
 }
 
-void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
-	AController* InstigatedBy, AActor* DamageCauser)
+void AValorantPlayerBase::SetDamagePoint_Implementation(AActor* DamagedActor, float Damage,
+	AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
+	FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
 {
-	Health -= Damage;
+	const UBaseDamageType* BaseDamageType = Cast<UBaseDamageType>(DamageType);
+	if (BaseDamageType)
+	{
+		float DamageMultiplier = BaseDamageType->ProcessDamage(DamageCauser, this, HitLocation);
+		Health -= Damage * DamageMultiplier;
+	}
 
 	if (Health <= 0)
 	{
@@ -115,6 +152,38 @@ void AValorantPlayerBase::MoveRight(float Value)
 		AddMovementInput(GetActorRightVector(), Value);
 	}
 }
+
+void AValorantPlayerBase::OnAbility1Pressed_Implementation()
+{
+	SkillManager->OnAbilityUsed(0);
+}
+
+void AValorantPlayerBase::OnAbility1Released_Implementation()
+{
+	SkillManager->OnAbilityFinished(0);
+}
+
+void AValorantPlayerBase::OnAbility2Pressed_Implementation()
+{
+	SkillManager->OnAbilityUsed(1);
+}
+
+void AValorantPlayerBase::OnAbility2Released_Implementation()
+{
+	SkillManager->OnAbilityFinished(1);
+}
+
+void AValorantPlayerBase::OnUltimatePressed_Implementation()
+{
+	SkillManager->OnAbilityUsed(2);
+}
+
+void AValorantPlayerBase::OnUltimateReleased_Implementation()
+{
+	SkillManager->OnAbilityFinished(2);
+}
+
+
 
 
 

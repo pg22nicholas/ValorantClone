@@ -3,32 +3,46 @@
 
 #include "Ability/AbilityBase.h"
 
-// Sets default values for this component's properties
-UAbilityBase::UAbilityBase()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+#include "Net/UnrealNetwork.h"
 
-	// ...
+AAbilityBase::AAbilityBase()
+{
+	bReplicates = true;
 }
 
-
-// Called when the game starts
-void UAbilityBase::BeginPlay()
+// Add default functionality here for any IAbilityInterface functions that are not pure virtual.
+bool AAbilityBase::BeforeAbility(APlayerController* controller)
 {
-	Super::BeginPlay();
-
-	// ...
-	
+	if (bOnCooldown) return false;
+	CachedPlayerController = MakeWeakObjectPtr(controller);
+	TimeOnHoldStart = GetGameTimeSinceCreation();
+	IsHolding = true;
+	return true;
 }
 
-
-// Called every frame
-void UAbilityBase::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+bool AAbilityBase::PerformAbility()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (bOnCooldown) return false;
 
-	// ...
+	if (IsHoldAbility && !IsHolding) return false;
+	IsHolding = false;
+
+	UWorld* world = GetWorld();
+	if (!world) return false;
+
+	world->GetTimerManager().SetTimer(CooldownTimerHandle, this, &AAbilityBase::CooldownFinished, Cooldown, false);
+	bOnCooldown = true;
+	return true;
 }
 
+void AAbilityBase::CooldownFinished()
+{
+	bOnCooldown = false;
+}
+
+void AAbilityBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AAbilityBase, bOnCooldown);
+	DOREPLIFETIME(AAbilityBase, IsHolding);
+}
