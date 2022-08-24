@@ -24,17 +24,20 @@ bool ABasicAOEDamageAbility::PerformAbility()
 	if (!world) return false;
 
 	if (!CachedPlayerController.IsValid()) return false;
-	
+
+	// get player camera's rotation and position to line trace
 	FVector ViewportLocation;
 	FRotator ViewportRotation;
 	CachedPlayerController->GetPlayerViewPoint(OUT ViewportLocation, OUT ViewportRotation);
 	FVector EndCast = ViewportLocation + ViewportRotation.Vector() * 10000;
 
+	// get damage amount based on length held
 	world->GetTimerManager().ClearTimer(HoldTimerHandle);
 	float TimeHeld = GetGameTimeSinceCreation() - TimeOnHoldStart;
 	float PercentOfMaxHeld = UKismetMathLibrary::Min(TimeHeld / HoldTime, 1);
 	float damageToApply = UKismetMathLibrary::Max(MaxDamage * PercentOfMaxHeld, MinDamage);
-	
+
+	// Line trace to center point of AOE explosion
 	FHitResult HitResult;
 	if (UKismetSystemLibrary::LineTraceSingleForObjects(world, ViewportLocation, EndCast, LineCastType,
 		false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, HitResult, true))
@@ -43,9 +46,11 @@ bool ABasicAOEDamageAbility::PerformAbility()
 		TArray<AActor*> ActorsToIgnore;
 		ActorsToIgnore.Add(CachedPlayerController->GetPawn());
 		TArray<FHitResult> HitResults;
+		// sphere trace to find all players inside sphere trace at a location
 		UKismetSystemLibrary::SphereTraceMulti(world, HitLocation, HitLocation + FVector::UpVector * 10, Radius,
 			SphereTrace, false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, HitResults, false);
-		
+
+		// Apply point damage to all actors hit
 		for (FHitResult SphereHitResult : HitResults)
 		{
 			UGameplayStatics::ApplyPointDamage(SphereHitResult.GetActor(), damageToApply, HitLocation, SphereHitResult, CachedPlayerController.Get(), this, DamageType);

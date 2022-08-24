@@ -33,9 +33,6 @@ public:
 	TArray<TEnumAsByte<EObjectTypeQuery>> LineCastType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TEnumAsByte<EObjectTypeQuery>> SphereCastType;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TEnumAsByte<ETraceTypeQuery> SphereTrace;
 	
 	virtual bool BeforeAbility(APlayerController* controller) override;
