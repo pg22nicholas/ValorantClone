@@ -32,7 +32,7 @@ void USkillManager::InitiateAbilities_Implementation()
 void USkillManager::InitiateAbilityHelper(uint8 index)
 {
 	if (index >= AbilityTypes.Num()) return;
-	AAbilityBase* ability = GetWorld()->SpawnActor<AAbilityBase>(AbilityTypes[0]);
+	AAbilityBase* ability = GetWorld()->SpawnActor<AAbilityBase>(AbilityTypes[index]);
 	if (ability)
 	{
 		ability->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepRelativeTransform);
