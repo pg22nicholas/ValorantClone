@@ -62,15 +62,18 @@ public:
 	
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite) 
 	float Health = 100.0f;
-	
+
+	UFUNCTION()
 	void Stun_Implementation(float stunDuration) override;
 
+	UFUNCTION()
 	void KnockBack_Implementation(FVector knockBackForce) override;
 
 protected:
 
 	UFUNCTION(Server, Reliable)
-	void SetDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void SetDamagePoint(AActor* DamagedActor, float Damage, class AController* InstigatedBy, FVector HitLocation,
+		UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
 
 	UFUNCTION(Server, Reliable)
 	void Shoot();
@@ -102,5 +105,9 @@ private:
 
 	void OnUltimatePressed();
 	void OnUltimateReleased();
+
+	bool IsStun = false;
+	FTimerHandle StunTimerHandle;
+	void EndStun();
 
 };

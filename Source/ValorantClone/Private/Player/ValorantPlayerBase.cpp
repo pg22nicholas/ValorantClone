@@ -8,6 +8,7 @@
 #include "Components/ChildActorComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "DamageTypes/BaseDamageType.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameSession.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -51,17 +52,26 @@ AValorantPlayerBase::AValorantPlayerBase()
 void AValorantPlayerBase::BeginPlay()
 {
 	Super::BeginPlay();
-	OnTakeAnyDamage.AddDynamic(this, &AValorantPlayerBase::SetDamage);
+	OnTakePointDamage.AddDynamic(this, &AValorantPlayerBase::SetDamagePoint);
 }
 
 void AValorantPlayerBase::Stun_Implementation(float stunDuration)
 {
-	// TODO:
+	if (IsStun) return;
+	
+	IsStun = true;
+	UWorld* world = GetWorld();
+	world->GetTimerManager().SetTimer(StunTimerHandle, this, &AValorantPlayerBase::EndStun, stunDuration, false);
+}
+
+void AValorantPlayerBase::EndStun()
+{
+	IsStun = false;
 }
 
 void AValorantPlayerBase::KnockBack_Implementation(FVector knockBackForce)
 {
-	// TODO:
+	GetCharacterMovement()->AddImpulse(knockBackForce * GetCapsuleComponent()->GetMass());
 }
 
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -93,13 +103,14 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("Ultimate", IE_Released, this, &AValorantPlayerBase::OnUltimateReleased);
 }
 
-void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
-	AController* InstigatedBy, AActor* DamageCauser)
+void AValorantPlayerBase::SetDamagePoint_Implementation(AActor* DamagedActor, float Damage,
+	AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
+	FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
 {
 	const UBaseDamageType* BaseDamageType = Cast<UBaseDamageType>(DamageType);
 	if (BaseDamageType)
 	{
-		float DamageMultiplier = BaseDamageType->ProcessDamage(DamageCauser, this, GetActorLocation());
+		float DamageMultiplier = BaseDamageType->ProcessDamage(DamageCauser, this, HitLocation);
 		Health -= Damage * DamageMultiplier;
 	}
 
@@ -171,6 +182,8 @@ void AValorantPlayerBase::OnUltimateReleased()
 {
 	SkillManager->OnAbilityFinished(2);
 }
+
+
 
 
 

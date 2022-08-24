@@ -35,23 +35,22 @@ void ABasicAOEDamageAbility::EndAbility()
 	world->GetTimerManager().ClearTimer(HoldTimerHandle);
 	float TimeHeld = GetGameTimeSinceCreation() - TimeOnHoldStart;
 	float PercentOfMaxHeld = UKismetMathLibrary::Min(TimeHeld / HoldTime, 1);
-	float damageToApply = MaxDamage * PercentOfMaxHeld;
+	float damageToApply = UKismetMathLibrary::Max(MaxDamage * PercentOfMaxHeld, MinDamage);
 	
 	FHitResult HitResult;
 	if (UKismetSystemLibrary::LineTraceSingleForObjects(world, ViewportLocation, EndCast, LineCastType,
 		false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, HitResult, true))
 	{
 		FVector HitLocation = HitResult.Location;
-		UKismetSystemLibrary::DrawDebugSphere(world, HitLocation, Radius, 12, FLinearColor::Blue, 5);
 		TArray<AActor*> ActorsToIgnore;
 		ActorsToIgnore.Add(CachedPlayerController->GetPawn());
-		TArray<AActor*> HitActors;
-		UKismetSystemLibrary::SphereOverlapActors(world, HitLocation, Radius, SphereCastType, nullptr, ActorsToIgnore, HitActors);
-		for (AActor* HitActor : HitActors)
+		TArray<FHitResult> HitResults;
+		UKismetSystemLibrary::SphereTraceMulti(world, HitLocation, HitLocation + FVector::UpVector * 10, Radius,
+			SphereTrace, false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, HitResults, false);
+		
+		for (FHitResult SphereHitResult : HitResults)
 		{
-			UGameplayStatics::ApplyDamage(HitActor, damageToApply, CachedPlayerController.Get(), this, UDamageType::StaticClass());
-			UGameplayStatics::ApplyDamage(HitActor, 0, CachedPlayerController.Get(), this, StunDamageType);
-			UGameplayStatics::ApplyDamage(HitActor, 0, CachedPlayerController.Get(), this, KnockBackDamageType);
+			UGameplayStatics::ApplyPointDamage(SphereHitResult.GetActor(), damageToApply, HitLocation, SphereHitResult, CachedPlayerController.Get(), this, DamageType);
 		}
 	}
 }
