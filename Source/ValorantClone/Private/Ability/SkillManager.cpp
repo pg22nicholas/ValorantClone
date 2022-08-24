@@ -56,13 +56,13 @@ void USkillManager::OnAbilityUsed(uint8 abilityIndex)
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (!PlayerController) return;
 	
-	Abilities[abilityIndex]->StartAbility(PlayerController);
+	Abilities[abilityIndex]->BeforeAbility(PlayerController);
 }
 
 void USkillManager::OnAbilityFinished(uint8 abilityIndex)
 {
 	if (abilityIndex >= AbilityTypes.Num()) return;
-	Abilities[abilityIndex]->EndAbility();
+	Abilities[abilityIndex]->PerformAbility();
 }
 
 void USkillManager::OnAbilityCancelled(uint8 abilityIndex)

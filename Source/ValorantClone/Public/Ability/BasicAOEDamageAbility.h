@@ -38,14 +38,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TEnumAsByte<ETraceTypeQuery> SphereTrace;
 	
-	virtual void StartAbility(APlayerController* controller) override;
-	virtual void EndAbility() override;
+	virtual bool BeforeAbility(APlayerController* controller) override;
+	virtual bool PerformAbility() override;
 	virtual bool CancelAbility() override;
 
-private:
-	float TimeOnHoldStart = 0;
-
-	FTimerHandle HoldTimerHandle;
-	bool IsHolding = false;
 	
 };

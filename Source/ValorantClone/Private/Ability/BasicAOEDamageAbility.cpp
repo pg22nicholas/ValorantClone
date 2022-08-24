@@ -7,25 +7,23 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-void ABasicAOEDamageAbility::StartAbility(APlayerController* controller)
+bool ABasicAOEDamageAbility::BeforeAbility(APlayerController* controller)
 {
-	Super::StartAbility(controller);
-	TimeOnHoldStart = GetGameTimeSinceCreation();
+	if (!Super::BeforeAbility(controller)) return false;
 	UWorld* world = GetWorld();
-	if (!world) return;
-
-	IsHolding = true;
+	if (!world) return false;
+	
+	return true;
 }
 
-void ABasicAOEDamageAbility::EndAbility()
+bool ABasicAOEDamageAbility::PerformAbility()
 {
-	if (!IsHolding) return;
-
-	IsHolding = false;
+	if (!Super::PerformAbility()) return false;
+	
 	UWorld* world = GetWorld();
-	if (!world) return;
+	if (!world) return false;
 
-	if (!CachedPlayerController.IsValid()) return;
+	if (!CachedPlayerController.IsValid()) return false;
 	
 	FVector ViewportLocation;
 	FRotator ViewportRotation;
@@ -53,6 +51,7 @@ void ABasicAOEDamageAbility::EndAbility()
 			UGameplayStatics::ApplyPointDamage(SphereHitResult.GetActor(), damageToApply, HitLocation, SphereHitResult, CachedPlayerController.Get(), this, DamageType);
 		}
 	}
+	return true;
 }
 
 bool ABasicAOEDamageAbility::CancelAbility()

@@ -17,6 +17,9 @@ public:
 
 	AAbilityBase();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Cooldown = 2.f;
+
 	DECLARE_DELEGATE(FAbiltiyEndSignature)
 	FAbiltiyEndSignature AbilityEnd;
  
@@ -29,14 +32,28 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	uint8 AbilityDataTableIndex = 0;
 
+	// if the ability has a hold before it's performed
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsHoldAbility = true;
+
 	// Player controller of player that initiated this ability
 	UPROPERTY()
 	TWeakObjectPtr<APlayerController> CachedPlayerController;
 
-	virtual void StartAbility(APlayerController* controller);
-	virtual void EndAbility() PURE_VIRTUAL(AAbilityBase::EndAbility,);
+	// Used for things like holding a charge before performing the ability
+	virtual bool BeforeAbility(APlayerController* controller);
+	// Performs the actual ability
+	virtual bool PerformAbility();
 	virtual bool CancelAbility() PURE_VIRTUAL(AAbilityBase::CancelAbility, return false; );
 
 protected:
 	bool bOnCooldown = false;
+	FTimerHandle CooldownTimerHandle;
+
+	void CooldownFinished();
+
+	float TimeOnHoldStart = 0;
+
+	FTimerHandle HoldTimerHandle;
+	bool IsHolding = false;
 };
