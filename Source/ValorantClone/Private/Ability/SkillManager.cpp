@@ -52,8 +52,10 @@ void USkillManager::OnAbilityUsed(uint8 abilityIndex)
 	if (abilityIndex >= AbilityTypes.Num()) return;
 	UWorld* world = GetWorld();
 	if (!world) return;
-	
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	AController* controller = GetOwner()->GetInstigatorController();
+	if (!controller) return;
+	APlayerController* PlayerController = Cast<APlayerController>(controller);
 	if (!PlayerController) return;
 	
 	Abilities[abilityIndex]->BeforeAbility(PlayerController);

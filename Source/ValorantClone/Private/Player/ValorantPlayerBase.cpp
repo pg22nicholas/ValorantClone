@@ -153,32 +153,32 @@ void AValorantPlayerBase::MoveRight(float Value)
 	}
 }
 
-void AValorantPlayerBase::OnAbility1Pressed()
+void AValorantPlayerBase::OnAbility1Pressed_Implementation()
 {
 	SkillManager->OnAbilityUsed(0);
 }
 
-void AValorantPlayerBase::OnAbility1Released()
+void AValorantPlayerBase::OnAbility1Released_Implementation()
 {
 	SkillManager->OnAbilityFinished(0);
 }
 
-void AValorantPlayerBase::OnAbility2Pressed()
+void AValorantPlayerBase::OnAbility2Pressed_Implementation()
 {
 	SkillManager->OnAbilityUsed(1);
 }
 
-void AValorantPlayerBase::OnAbility2Released()
+void AValorantPlayerBase::OnAbility2Released_Implementation()
 {
 	SkillManager->OnAbilityFinished(1);
 }
 
-void AValorantPlayerBase::OnUltimatePressed()
+void AValorantPlayerBase::OnUltimatePressed_Implementation()
 {
 	SkillManager->OnAbilityUsed(2);
 }
 
-void AValorantPlayerBase::OnUltimateReleased()
+void AValorantPlayerBase::OnUltimateReleased_Implementation()
 {
 	SkillManager->OnAbilityFinished(2);
 }

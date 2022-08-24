@@ -97,13 +97,19 @@ protected:
 	void LookUpAtRate(float Rate);
 
 private:
+	UFUNCTION(Server, Reliable)
 	void OnAbility1Pressed();
+	UFUNCTION(Server, Reliable)
 	void OnAbility1Released();
 
+	UFUNCTION(Server, Reliable)
 	void OnAbility2Pressed();
+	UFUNCTION(Server, Reliable)
 	void OnAbility2Released();
 
+	UFUNCTION(Server, Reliable)
 	void OnUltimatePressed();
+	UFUNCTION(Server, Reliable)
 	void OnUltimateReleased();
 
 	bool IsStun = false;
