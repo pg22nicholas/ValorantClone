@@ -47,6 +47,7 @@ public:
 	virtual bool CancelAbility() PURE_VIRTUAL(AAbilityBase::CancelAbility, return false; );
 
 protected:
+	UPROPERTY(Replicated)
 	bool bOnCooldown = false;
 	FTimerHandle CooldownTimerHandle;
 
@@ -55,5 +56,8 @@ protected:
 	float TimeOnHoldStart = 0;
 
 	FTimerHandle HoldTimerHandle;
+	UPROPERTY(Replicated)
 	bool IsHolding = false;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

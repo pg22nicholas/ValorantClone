@@ -3,6 +3,8 @@
 
 #include "Ability/AbilityBase.h"
 
+#include "Net/UnrealNetwork.h"
+
 AAbilityBase::AAbilityBase()
 {
 	bReplicates = true;
@@ -36,4 +38,11 @@ bool AAbilityBase::PerformAbility()
 void AAbilityBase::CooldownFinished()
 {
 	bOnCooldown = false;
+}
+
+void AAbilityBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AAbilityBase, bOnCooldown);
+	DOREPLIFETIME(AAbilityBase, IsHolding);
 }
