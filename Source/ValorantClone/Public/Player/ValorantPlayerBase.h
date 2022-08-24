@@ -110,4 +110,6 @@ private:
 	FTimerHandle StunTimerHandle;
 	void EndStun();
 
+	const float PlayerMass = 200;
+
 };

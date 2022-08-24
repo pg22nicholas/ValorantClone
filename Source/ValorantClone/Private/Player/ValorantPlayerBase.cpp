@@ -71,7 +71,7 @@ void AValorantPlayerBase::EndStun()
 
 void AValorantPlayerBase::KnockBack_Implementation(FVector knockBackForce)
 {
-	GetCharacterMovement()->AddImpulse(knockBackForce * GetCapsuleComponent()->GetMass());
+	GetCharacterMovement()->AddImpulse(knockBackForce * PlayerMass);
 }
 
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
