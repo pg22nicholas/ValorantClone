@@ -74,12 +74,6 @@ void AValorantPlayerBase::KnockBack_Implementation(FVector knockBackForce)
 	GetCharacterMovement()->AddImpulse(knockBackForce * PlayerMass);
 }
 
-void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AValorantPlayerBase, Health);
-}
-
 void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -90,8 +84,8 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAxis("MoveForward", this, &AValorantPlayerBase::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AValorantPlayerBase::MoveRight);
 
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("Turn", this, &AValorantPlayerBase::YawInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &AValorantPlayerBase::PitchInput);
 	
 	PlayerInputComponent->BindAction("Ability1", IE_Pressed, this, &AValorantPlayerBase::OnAbility1Pressed);
 	PlayerInputComponent->BindAction("Ability1", IE_Released, this, &AValorantPlayerBase::OnAbility1Released);
@@ -137,6 +131,7 @@ void AValorantPlayerBase::Shoot_Implementation()
 
 void AValorantPlayerBase::MoveForward(float Value)
 {
+	if (IsStun) return;
 	if (Value != 0.0f)
 	{
 		// Add movement in that direction
@@ -146,10 +141,29 @@ void AValorantPlayerBase::MoveForward(float Value)
 
 void AValorantPlayerBase::MoveRight(float Value)
 {
+	if (IsStun) return;
 	if (Value != 0.0f)
 	{
 		// Add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
+	}
+}
+
+void AValorantPlayerBase::YawInput(float Val)
+{
+	if (IsStun) return;
+	if (Val != 0.0f)
+	{
+		AddControllerYawInput(Val);
+	}
+}
+
+void AValorantPlayerBase::PitchInput(float Val)
+{
+	if (IsStun) return;
+	if (Val != 0.0f)
+	{
+		AddControllerPitchInput(Val);
 	}
 }
 
@@ -181,6 +195,13 @@ void AValorantPlayerBase::OnUltimatePressed_Implementation()
 void AValorantPlayerBase::OnUltimateReleased_Implementation()
 {
 	SkillManager->OnAbilityFinished(2);
+}
+
+void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AValorantPlayerBase, Health);
+	DOREPLIFETIME(AValorantPlayerBase, IsStun);
 }
 
 
