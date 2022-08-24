@@ -7,7 +7,7 @@ float UKnockBackDamageType::ProcessDamage(AActor* Owner, AValorantPlayerBase* Hi
 {
 	if (const IDamagingInterface* DamageInterface = Cast<IDamagingInterface>(HitCharacter))
 	{
-		FVector direction = HitCharacter->GetActorLocation() - Owner->GetActorLocation();
+		FVector direction = HitCharacter->GetActorLocation() - HitLocation;
 		direction.Normalize();
 		direction *= KnockBackForce;
 		direction.Z = KnockUpForce;

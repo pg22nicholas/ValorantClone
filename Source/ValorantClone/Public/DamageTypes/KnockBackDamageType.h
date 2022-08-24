@@ -16,9 +16,9 @@ class VALORANTCLONE_API UKnockBackDamageType : public UBaseDamageType
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float KnockBackForce = 10.f;
+	float KnockBackForce = 500.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float KnockUpForce = 10.f; 
+	float KnockUpForce = 200.f; 
 
 	virtual float ProcessDamage(AActor* Owner, AValorantPlayerBase* HitCharacter, FVector HitLocation) const override;
 	
