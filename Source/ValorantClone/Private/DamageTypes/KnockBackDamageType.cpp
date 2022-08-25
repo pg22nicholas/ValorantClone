@@ -3,7 +3,7 @@
 
 #include "DamageTypes/KnockBackDamageType.h"
 
-float UKnockBackDamageType::ProcessDamage(AActor* Owner, AValorantPlayerBase* HitCharacter, FVector HitLocation) const
+float UKnockBackDamageType::ProcessDamage(AActor* Owner, APawn* HitCharacter, FVector HitLocation) const
 {
 	if (const IDamagingInterface* DamageInterface = Cast<IDamagingInterface>(HitCharacter))
 	{

@@ -3,7 +3,7 @@
 
 #include "DamageTypes/StunDamageType.h"
 
-float UStunDamageType::ProcessDamage(AActor* Owner, AValorantPlayerBase* HitCharacter, FVector HitLocation) const
+float UStunDamageType::ProcessDamage(AActor* Owner, APawn* HitCharacter, FVector HitLocation) const
 {
 	if (const IDamagingInterface* DamageInterface = Cast<IDamagingInterface>(HitCharacter))
 	{

@@ -3,7 +3,7 @@
 
 #include "DamageTypes/BaseDamageType.h"
 
-float UBaseDamageType::ProcessDamage(AActor* Owner, AValorantPlayerBase* HitCharacter, FVector HitLocation) const
+float UBaseDamageType::ProcessDamage(AActor* Owner, APawn* HitCharacter, FVector HitLocation) const
 {
 	return DamageMultiplier;
 }
