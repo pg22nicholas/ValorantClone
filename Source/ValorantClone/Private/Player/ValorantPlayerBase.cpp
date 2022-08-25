@@ -3,6 +3,7 @@
 
 #include "Player/ValorantPlayerBase.h"
 
+#include "Ability/SkillManager.h"
 #include "Interfaces/WeaponInterface.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
@@ -47,6 +48,10 @@ AValorantPlayerBase::AValorantPlayerBase()
 }
 
 
+void AValorantPlayerBase::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+}
 
 // Called when the game starts or when spawned
 void AValorantPlayerBase::BeginPlay()
@@ -57,16 +62,18 @@ void AValorantPlayerBase::BeginPlay()
 
 void AValorantPlayerBase::Stun_Implementation(float stunDuration)
 {
-	if (IsStun) return;
+	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	
-	IsStun = true;
+	ValorantPlayerState->SetIsStun(true);
 	UWorld* world = GetWorld();
 	world->GetTimerManager().SetTimer(StunTimerHandle, this, &AValorantPlayerBase::EndStun, stunDuration, false);
 }
 
 void AValorantPlayerBase::EndStun()
 {
-	IsStun = false;
+	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (ValorantPlayerState) ValorantPlayerState->SetIsStun(false);
 }
 
 void AValorantPlayerBase::KnockBack_Implementation(FVector knockBackForce)
@@ -97,20 +104,24 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("Ultimate", IE_Released, this, &AValorantPlayerBase::OnUltimateReleased);
 }
 
-void AValorantPlayerBase::SetDamagePoint_Implementation(AActor* DamagedActor, float Damage,
+void AValorantPlayerBase::SetDamagePoint(AActor* DamagedActor, float Damage,
 	AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
 	FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
 {
-	const UBaseDamageType* BaseDamageType = Cast<UBaseDamageType>(DamageType);
-	if (BaseDamageType)
+	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (ValorantPlayerState && GetLocalRole() == ROLE_Authority)
 	{
-		float DamageMultiplier = BaseDamageType->ProcessDamage(DamageCauser, this, HitLocation);
-		Health -= Damage * DamageMultiplier;
-	}
+		const UBaseDamageType* BaseDamageType = Cast<UBaseDamageType>(DamageType);
+		if (BaseDamageType)
+		{
+			float DamageMultiplier = BaseDamageType->ProcessDamage(DamageCauser, this, HitLocation);
+			ValorantPlayerState->SetCurrHealth(ValorantPlayerState->GetCurrHealth() - (Damage * DamageMultiplier));
+		}
 
-	if (Health <= 0)
-	{
-		Destroy(); 
+		if (ValorantPlayerState->GetCurrHealth() <= 0)
+		{
+			Destroy(); 
+		}
 	}
 }
 
@@ -131,7 +142,8 @@ void AValorantPlayerBase::Shoot_Implementation()
 
 void AValorantPlayerBase::MoveForward(float Value)
 {
-	if (IsStun) return;
+	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Value != 0.0f)
 	{
 		// Add movement in that direction
@@ -141,7 +153,8 @@ void AValorantPlayerBase::MoveForward(float Value)
 
 void AValorantPlayerBase::MoveRight(float Value)
 {
-	if (IsStun) return;
+	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Value != 0.0f)
 	{
 		// Add movement in that direction
@@ -151,7 +164,8 @@ void AValorantPlayerBase::MoveRight(float Value)
 
 void AValorantPlayerBase::YawInput(float Val)
 {
-	if (IsStun) return;
+	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Val != 0.0f)
 	{
 		AddControllerYawInput(Val);
@@ -160,7 +174,8 @@ void AValorantPlayerBase::YawInput(float Val)
 
 void AValorantPlayerBase::PitchInput(float Val)
 {
-	if (IsStun) return;
+	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Val != 0.0f)
 	{
 		AddControllerPitchInput(Val);
@@ -200,8 +215,6 @@ void AValorantPlayerBase::OnUltimateReleased_Implementation()
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AValorantPlayerBase, Health);
-	DOREPLIFETIME(AValorantPlayerBase, IsStun);
 }
 
 

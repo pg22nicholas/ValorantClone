@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ability/AbilityBase.h"
-#include "Ability/SkillManager.h"
 #include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "ValorantPlayerBase.generated.h"
 
-class UChildActorComponent; 
+class UChildActorComponent;
+class AValorantPlayerStateBase;
+class USkillManager;
 
 UCLASS()
 class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagingInterface
@@ -53,15 +53,14 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USkillManager* SkillManager;
+
+	virtual void OnRep_PlayerState() override;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite) 
-	float Health = 100.0f;
 
 	UFUNCTION()
 	void Stun_Implementation(float stunDuration) override;
@@ -71,7 +70,7 @@ public:
 
 protected:
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION()
 	void SetDamagePoint(AActor* DamagedActor, float Damage, class AController* InstigatedBy, FVector HitLocation,
 		UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
 
@@ -92,6 +91,8 @@ protected:
 
 	void PitchInput(float Val);
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 private:
 	UFUNCTION(Server, Reliable)
 	void OnAbility1Pressed();
@@ -107,12 +108,13 @@ private:
 	void OnUltimatePressed();
 	UFUNCTION(Server, Reliable)
 	void OnUltimateReleased();
-
-	UPROPERTY(Replicated)
-	bool IsStun = false;
+	
 	FTimerHandle StunTimerHandle;
 	void EndStun();
 
 	const float PlayerMass = 200;
+
+	UPROPERTY()
+	AValorantPlayerStateBase* ValorantPlayerState;
 
 };
