@@ -4,6 +4,7 @@
 #include "player/ValorantPlayerControllerBase.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Player/ValorantPlayerBase.h"
 #include "player/ValorantPlayerStateBase.h"
 
@@ -20,10 +21,16 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 
 	// TODO: use player state player type instead ***
 	TSubclassOf<AValorantPlayerBase> PlayerCharacter;
-	if (IsLocalController())
+
+	int rand = UKismetMathLibrary::RandomIntegerInRange(0, 1);
+	if (rand == 0)
+	{
 		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_2);
-	else
+	} else
+	{
 		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_1);
+	}
+		
 	
 	//TSubclassOf<AValorantPlayerBase> PlayerCharacter = GameMode->GetPlayerCharacterType(MyPlayerState->GetPlayerType());
 
