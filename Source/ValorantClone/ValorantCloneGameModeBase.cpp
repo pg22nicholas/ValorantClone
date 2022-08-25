@@ -31,13 +31,14 @@ TSubclassOf<AValorantPlayerBase> AValorantCloneGameModeBase::GetPlayerCharacterT
 	return PlayerCharacterTypes[static_cast<uint8>(character)];
 }
 
-FTransform AValorantCloneGameModeBase::GetSpawnPoint(TEAMS teams) const
+FTransform AValorantCloneGameModeBase::GetSpawnPoint(TEAMS team) const
 {
-	// TODO:
 	for (TActorIterator<APlayerStart> playerStart(GetWorld()); playerStart; ++playerStart)
 	{
 		// TODO: Use tags to prevent spawning multiple players at same spot and use teams parameter
-		return playerStart->GetTransform();
+		FName name = team == TEAMS::TEAM_A ? "TeamA" : "TeamB";
+		if (playerStart->PlayerStartTag == name)
+			return playerStart->GetTransform();
 	}
 	return FTransform();
 }

@@ -30,7 +30,10 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 	{
 		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_1);
 	}
-		
+
+	TEAMS team = IsTeamA ? TEAMS::TEAM_A : TEAMS::TEAM_B;
+	// flip-flop team
+	IsTeamA = !IsTeamA;
 	
 	//TSubclassOf<AValorantPlayerBase> PlayerCharacter = GameMode->GetPlayerCharacterType(MyPlayerState->GetPlayerType());
 
@@ -38,13 +41,11 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 	spawnParams.Owner = this;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	
-	FTransform spawnTransform = GameMode->GetSpawnPoint(TEAMS::TEAM_A);
+	FTransform spawnTransform = GameMode->GetSpawnPoint(team);
 	OwningCharacter = Cast<AValorantPlayerBase>(world->SpawnActor(PlayerCharacter, &spawnTransform, spawnParams));
 	if (OwningCharacter)
 	{
-		// flip-flop team
-		OwningCharacter->SetTeam(IsTeamA ? TEAMS::TEAM_A : TEAMS::TEAM_B);
-		IsTeamA = !IsTeamA;
+		OwningCharacter->SetTeam(team);
 		
 		APawn* CachedPawn = GetPawn();
 		Possess(OwningCharacter);
@@ -53,3 +54,5 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 			CachedPawn->Destroy();
 	}
 }
+
+
