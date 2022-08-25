@@ -50,5 +50,7 @@ private:
 
 	// Type of player class this player state represents
 	PLAYABLE_CHARACTERS PlayerType;
+
+	
 	
 };

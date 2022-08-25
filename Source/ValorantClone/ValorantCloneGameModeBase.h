@@ -4,14 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
-#include "Player/ValorantPlayerBase.h"
 #include "ValorantCloneGameModeBase.generated.h"
 
-enum class TEAMS;
 enum class PLAYABLE_CHARACTERS;
-/**
- * 
- */
+enum class TEAMS;
+class AValorantPlayerBase;
+
 UCLASS()
 class VALORANTCLONE_API AValorantCloneGameModeBase : public AGameMode
 {
@@ -32,12 +30,14 @@ private:
 	
 };
 
+UENUM()
 enum class PLAYABLE_CHARACTERS
 {
 	PLAYER_1 = 0,
 	PLAYER_2 = 1
 };
 
+UENUM()
 enum class TEAMS
 {
 	TEAM_A = 0,

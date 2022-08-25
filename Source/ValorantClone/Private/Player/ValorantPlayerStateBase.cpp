@@ -16,6 +16,7 @@ void AValorantPlayerStateBase::BeginPlay()
 	CurrHealth = MaxHealth;
 }
 
+
 void AValorantPlayerStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

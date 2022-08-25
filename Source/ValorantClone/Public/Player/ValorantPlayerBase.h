@@ -6,6 +6,7 @@
 #include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "ValorantClone/ValorantCloneGameModeBase.h"
 #include "ValorantPlayerBase.generated.h"
 
 class UChildActorComponent;
@@ -55,6 +56,9 @@ public:
 	USkillManager* SkillManager;
 
 	virtual void OnRep_PlayerState() override;
+
+	TEAMS GetTeam();
+	void SetTeam(TEAMS team);
 	
 protected:
 	// Called when the game starts or when spawned
@@ -116,5 +120,8 @@ private:
 
 	UPROPERTY()
 	AValorantPlayerStateBase* ValorantPlayerState;
+
+	UPROPERTY(Replicated)
+	TEAMS Team;
 
 };

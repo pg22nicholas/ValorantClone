@@ -3,6 +3,7 @@
 
 #include "player/ValorantPlayerControllerBase.h"
 
+#include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/ValorantPlayerBase.h"
@@ -16,8 +17,7 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 	AValorantCloneGameModeBase* GameMode = Cast<AValorantCloneGameModeBase>(UGameplayStatics::GetGameMode(world));
 	if (!GameMode) return;
 
-	AValorantPlayerStateBase* MyPlayerState = Cast<AValorantPlayerStateBase>(PlayerState);
-	if (!PlayerState) return;
+	
 
 	// TODO: use player state player type instead ***
 	TSubclassOf<AValorantPlayerBase> PlayerCharacter;
@@ -42,6 +42,10 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 	OwningCharacter = Cast<AValorantPlayerBase>(world->SpawnActor(PlayerCharacter, &spawnTransform, spawnParams));
 	if (OwningCharacter)
 	{
+		// flip-flop team
+		OwningCharacter->SetTeam(IsTeamA ? TEAMS::TEAM_A : TEAMS::TEAM_B);
+		IsTeamA = !IsTeamA;
+		
 		APawn* CachedPawn = GetPawn();
 		Possess(OwningCharacter);
 		

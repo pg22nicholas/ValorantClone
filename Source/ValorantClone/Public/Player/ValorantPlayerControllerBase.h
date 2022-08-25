@@ -16,6 +16,8 @@ class VALORANTCLONE_API AValorantPlayerControllerBase : public APlayerController
 	GENERATED_BODY()
 
 public:
+	
+	
 	UFUNCTION(Server, Reliable)
 	void SER_SpawnPlayer();
 
@@ -25,3 +27,5 @@ private:
 	AValorantPlayerBase* OwningCharacter;
 	
 };
+
+static bool IsTeamA = true;

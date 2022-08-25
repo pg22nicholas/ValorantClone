@@ -15,6 +15,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/ValorantPlayerStateBase.h"
 #include "Weapon/WeaponBase.h"
+#include "ValorantClone/ValorantCloneGameModeBase.h"
 
 // Sets default values
 AValorantPlayerBase::AValorantPlayerBase()
@@ -212,9 +213,21 @@ void AValorantPlayerBase::OnUltimateReleased_Implementation()
 	SkillManager->OnAbilityFinished(2);
 }
 
+
+TEAMS AValorantPlayerBase::GetTeam()
+{
+	return Team;
+}
+
+void AValorantPlayerBase::SetTeam(TEAMS team)
+{
+	Team = team;
+}
+
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AValorantPlayerBase, Team);
 }
 
 
