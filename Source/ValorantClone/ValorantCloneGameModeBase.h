@@ -22,11 +22,14 @@ public:
 
 	TSubclassOf<AValorantPlayerBase> GetPlayerCharacterType(PLAYABLE_CHARACTERS character);
 
-	FTransform GetSpawnPoint(TEAMS teams) const;
+	FTransform GetSpawnPoint(TEAMS teams);
+	
+	TMap<FString, bool> SpawnMap;
 
 private:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess))
 	TArray<TSubclassOf<AValorantPlayerBase>> PlayerCharacterTypes;
+
 	
 };
 
