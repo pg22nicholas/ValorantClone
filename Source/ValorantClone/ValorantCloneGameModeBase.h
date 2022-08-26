@@ -16,7 +16,7 @@ namespace InProgressStates
 	extern const FName WaitingLoadingPhase;			// When players are stuck in spot, waiting for all players to load into the map
 	extern const FName BuyingPhase;					// When all players are buying their weapons
 	extern const FName RoundInProgress;				// When main round is active, all players attacks/shooting usable
-	extern const FName RoundRestarting;				// Map and players is resetting after one team won the round, goes back to buying phase
+	extern const FName EndRound;				// Map and players is resetting after one team won the round, goes back to buying phase
 	extern const FName GameEnded;					// When one of the teams have won the the game
 }
 
@@ -48,8 +48,6 @@ public:
 
 	void PlayerDied(AValorantPlayerBase* ValorantPlayer);
 
-	void WinRound(TEAMS team);
-
 protected:
 	virtual void HandleMatchHasStarted() override;
  
@@ -64,6 +62,10 @@ private:
 
 	FTimerHandle BuyPhaseTimerHandle;
 	void EndBuyingRound();
+
+	void EndRoundState();
+	void GameEndState();
+	void BuyPhaseState();
 	
 };
 

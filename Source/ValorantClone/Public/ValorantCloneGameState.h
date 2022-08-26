@@ -41,7 +41,7 @@ public:
 	bool IsMatchValorantWaitingPlayers();
 	bool IsMatchValorantBuying();
 	bool IsMatchValorantInProgress();
-	bool IsMatchValorantRestartingMap();
+	bool IsMatchValorantEndRound();
 	bool IsMatchValorantNotInProgress();
 	bool IsMatchEnded();
 
@@ -52,8 +52,6 @@ public:
 
 	uint8 GetNumTeamAWins();
 	uint8 GetNumTeamBWins();
-
-	void TeamWinRound(TEAMS team);
 	
 protected:
 	uint8 TeamAWins = 0;
@@ -71,5 +69,8 @@ protected:
 private:
 	uint8 NumTeamADead = 0;
 	uint8 NumTeamBDead = 0;
+
+	void EndRound();
+	void ResetRoundState();
 	
 };

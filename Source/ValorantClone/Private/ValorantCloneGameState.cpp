@@ -33,9 +33,9 @@ bool AValorantCloneGameState::IsMatchValorantInProgress()
 	return InProgressMatchState == InProgressStates::RoundInProgress;
 }
 
-bool AValorantCloneGameState::IsMatchValorantRestartingMap()
+bool AValorantCloneGameState::IsMatchValorantEndRound()
 {
-	return InProgressMatchState == InProgressStates::RoundRestarting;
+	return InProgressMatchState == InProgressStates::EndRound;
 }
 
 bool AValorantCloneGameState::IsMatchValorantNotInProgress()
@@ -79,16 +79,29 @@ uint8 AValorantCloneGameState::GetNumTeamBWins()
 	return TeamBWins;
 }
 
-void AValorantCloneGameState::TeamWinRound(TEAMS team)
+void AValorantCloneGameState::EndRound()
 {
-	Round++;
-	if (team == TEAMS::TEAM_A)
+	UWorld* world = GetWorld();
+	if (!world) return;
+	
+	AValorantCloneGameModeBase* ValoGameMode = Cast<AValorantCloneGameModeBase>(UGameplayStatics::GetGameMode(world));
+	if (ValoGameMode)
 	{
-		TeamAWins++;
-	} else
-	{
-		TeamBWins++;
+		if (NumTeamADead >= ValoGameMode->PlayersPerTeam)
+		{
+			TeamBWins++;
+		} else if (NumTeamBDead >= ValoGameMode->PlayersPerTeam)
+		{
+			TeamAWins++;
+		}
 	}
+	Round++;
+}
+
+void AValorantCloneGameState::ResetRoundState()
+{
+	NumTeamADead = 0;
+	NumTeamBDead = 0;
 }
 
 
@@ -107,9 +120,9 @@ void AValorantCloneGameState::OnRep_InProgressMatchState()
 	} else if (InProgressMatchState == InProgressStates::RoundInProgress)
 	{
 		// TODO:?
-	} else if (InProgressMatchState == InProgressStates::RoundRestarting)
+	} else if (InProgressMatchState == InProgressStates::EndRound)
 	{
-		// TODO:?
+		EndRound();
 	} else if (InProgressMatchState == InProgressStates::GameEnded)
 	{
 		// TODO?
