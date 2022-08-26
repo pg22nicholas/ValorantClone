@@ -17,14 +17,20 @@ class VALORANTCLONE_API AValorantPlayerControllerBase : public APlayerController
 
 public:
 	
-	
 	UFUNCTION(Server, Reliable)
 	void SER_SpawnPlayer();
+
+	UFUNCTION(Server, Reliable)
+	void SER_SetupPlayer(); 
+
+	TSubclassOf<AValorantPlayerBase> PlayerClassType;
 
 private:
 
 	UPROPERTY()
 	AValorantPlayerBase* OwningCharacter;
+
+	bool IsPlayerFirstSpawn = true;
 	
 };
 

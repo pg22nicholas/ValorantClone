@@ -35,6 +35,8 @@ public:
 
 	float GetMaxHealth() { return MaxHealth; }
 
+	TEAMS Team;
+
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

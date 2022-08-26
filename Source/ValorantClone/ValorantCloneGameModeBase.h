@@ -17,6 +17,7 @@ namespace InProgressStates
 	extern const FName BuyingPhase;					// When all players are buying their weapons
 	extern const FName RoundInProgress;				// When main round is active, all players attacks/shooting usable
 	extern const FName RoundRestarting;				// Map and players is resetting after one team won the round, goes back to buying phase
+	extern const FName GameEnded;					// When one of the teams have won the the game
 }
 
 UCLASS()
@@ -27,6 +28,14 @@ class VALORANTCLONE_API AValorantCloneGameModeBase : public AGameMode
 public:
 	AValorantCloneGameModeBase();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	uint8 PlayersPerTeam = 2;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	uint8 NumRoundsToWin = 4;
+
+	TMap<FString, bool> SpawnMap;
+
 	virtual void BeginPlay() override;
 
 	virtual void PostLogin(APlayerController* NewPlayer) override;
@@ -35,10 +44,11 @@ public:
 
 	FTransform GetSpawnPoint(TEAMS teams);
 	
-	TMap<FString, bool> SpawnMap;
+	void RespawnAllPlayers();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	uint8 PlayersPerTeam = 2;
+	void PlayerDied(AValorantPlayerBase* ValorantPlayer);
+
+	void WinRound(TEAMS team);
 
 protected:
 	virtual void HandleMatchHasStarted() override;
@@ -52,6 +62,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess))
 	TArray<TSubclassOf<AValorantPlayerBase>> PlayerCharacterTypes;
 
+	FTimerHandle BuyPhaseTimerHandle;
+	void EndBuyingRound();
 	
 };
 

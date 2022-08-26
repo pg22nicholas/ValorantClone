@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
-#include "Player/ValorantPlayerBase.h"
 #include "ValorantCloneGameState.generated.h"
+
+class AValorantPlayerBase;
+enum class TEAMS;
 
 namespace ValorantMatchState
 {
@@ -40,21 +42,34 @@ public:
 	bool IsMatchValorantBuying();
 	bool IsMatchValorantInProgress();
 	bool IsMatchValorantRestartingMap();
-	bool IsMatchNotInProgress();
+	bool IsMatchValorantNotInProgress();
+	bool IsMatchEnded();
+
+	void PlayerDied(TEAMS team);
+
+	uint8 GetNumTeamADead();
+	uint8 GetNumTeamBDead();
+
+	uint8 GetNumTeamAWins();
+	uint8 GetNumTeamBWins();
+
+	void TeamWinRound(TEAMS team);
 	
 protected:
 	uint8 TeamAWins = 0;
 	uint8 TeamBWins = 0;
 	uint8 Round = 1;
 
-	 UPROPERTY(ReplicatedUsing=OnRep_InProgressMatchState, BlueprintReadOnly, VisibleInstanceOnly, Category = GameState)
-	 FName InProgressMatchState;
+	UPROPERTY(ReplicatedUsing=OnRep_InProgressMatchState, BlueprintReadOnly, VisibleInstanceOnly, Category = GameState)
+	FName InProgressMatchState;
 
 	UFUNCTION()
 	virtual void OnRep_InProgressMatchState();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	
+private:
+	uint8 NumTeamADead = 0;
+	uint8 NumTeamBDead = 0;
 	
 };

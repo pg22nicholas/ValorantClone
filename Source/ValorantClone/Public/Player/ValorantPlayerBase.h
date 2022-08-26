@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ValorantCloneGameState.h"
 #include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
@@ -130,6 +131,11 @@ private:
 	TEAMS Team;
 
 	void SetDamage(float Damage, FVector HitLocation, const UDamageType* DamageType, AActor* DamageCauser);
+
+	AValorantCloneGameState* GetValoGameState();
+	bool IsStateCanMoveInput();
+	bool IsStateCanAttack();
+	bool IsStateCanBuy();
 
 };
 

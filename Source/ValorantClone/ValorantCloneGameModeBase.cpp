@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "ValorantCloneGameState.h"
 #include "GameFramework/PlayerStart.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/ValorantPlayerBase.h"
 #include "player/ValorantPlayerControllerBase.h"
 #include "player/ValorantPlayerStateBase.h"
@@ -17,6 +18,7 @@ namespace InProgressStates
 	const FName BuyingPhase = FName(TEXT("BuyingPhase"));				
 	const FName RoundInProgress = FName(TEXT("RoundInProgress"));			
 	const FName RoundRestarting = FName(TEXT("RoundRestarting"));				
+	const FName GameEnded = FName(TEXT("GameEnded"));				
 }
 
 
@@ -42,7 +44,7 @@ void AValorantCloneGameModeBase::PostLogin(APlayerController* NewPlayer)
 	
 	if (AValorantPlayerControllerBase* MyController = Cast<AValorantPlayerControllerBase>(NewPlayer))
 	{
-		MyController->SER_SpawnPlayer();
+		MyController->SER_SetupPlayer();
 		MyController->SetInputMode(FInputModeGameOnly());
 
 		// check if all players loaded in
@@ -79,6 +81,23 @@ FTransform AValorantCloneGameModeBase::GetSpawnPoint(TEAMS team)
 	return FTransform();
 }
 
+void AValorantCloneGameModeBase::RespawnAllPlayers()
+{
+	UWorld* world = GetWorld();
+	if (!world) return;
+	
+	TArray<AActor*> AllControllers;
+	UGameplayStatics::GetAllActorsOfClass(world, AValorantPlayerControllerBase::StaticClass(), AllControllers);
+	for (AActor* controllerActor : AllControllers)
+	{
+		AValorantPlayerControllerBase* controller = Cast<AValorantPlayerControllerBase>(controllerActor);
+		if (controller)
+		{
+			controller->SER_SpawnPlayer();
+		}
+	}
+}
+
 void AValorantCloneGameModeBase::HandleMatchHasStarted()
 {
 
@@ -106,21 +125,89 @@ void AValorantCloneGameModeBase::SetInProgressMatchState(FName NewInProgressStat
 
 void AValorantCloneGameModeBase::OnValorantMatchStateSet()
 {
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.0f, FColor::Red, InProgressMatchState.ToString());
 	if (InProgressMatchState == InProgressStates::NotInProgress)
 	{
 		// TODO?
-	}
-	else if (InProgressMatchState == InProgressStates::WaitingLoadingPhase)
+	} else if (InProgressMatchState == InProgressStates::WaitingLoadingPhase)
 	{
 		// TODO?
 	} else if (InProgressMatchState == InProgressStates::BuyingPhase)
 	{
-		// TODO?
+		UWorld* world = GetWorld();
+		if (!world) return;
+
+		// set Buy Phase timer until round starts
+		world->GetTimerManager().SetTimer(BuyPhaseTimerHandle, this, &AValorantCloneGameModeBase::EndBuyingRound, 5, false);
+		
 	} else if (InProgressMatchState == InProgressStates::RoundInProgress)
 	{
-		// TODO?
+		// reset PlayerStarts for next round's spawning
+		SpawnMap.Empty();
 	} else if (InProgressMatchState == InProgressStates::RoundRestarting)
 	{
-		// TODO?
+		UWorld* world = GetWorld();
+		if (!world) return;
+
+		if (AValorantCloneGameState* ValorantGameState = Cast<AValorantCloneGameState>(world->GetGameState()))
+		{
+			RespawnAllPlayers();
+			SetInProgressMatchState(InProgressStates::BuyingPhase);
+		}
+		
+	} else if (InProgressMatchState == InProgressStates::GameEnded)
+	{
+		UWorld* world = GetWorld();
+		if (!world) return;
+
+		if (AValorantCloneGameState* ValorantGameState = Cast<AValorantCloneGameState>(world->GetGameState()))
+		{
+			FString winningTeam = ValorantGameState->GetNumTeamAWins() >= NumRoundsToWin ? "TeamA" : "TeamB";
+			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.0f, FColor::Blue, "Team: " + winningTeam);
+		}
+	}
+}
+
+void AValorantCloneGameModeBase::EndBuyingRound()
+{
+	SetInProgressMatchState(InProgressStates::RoundInProgress);
+}
+
+void AValorantCloneGameModeBase::PlayerDied(AValorantPlayerBase* ValorantPlayer)
+{
+	UWorld* world = GetWorld();
+	if (!world) return;
+
+	if (AValorantCloneGameState* ValorantGameState = Cast<AValorantCloneGameState>(world->GetGameState()))
+	{
+		ValorantGameState->PlayerDied(ValorantPlayer->GetTeam());
+		if (ValorantGameState->GetNumTeamADead() >= PlayersPerTeam)
+		{
+			// Team A loses the round
+			WinRound(TEAMS::TEAM_B);
+		} else if (ValorantGameState->GetNumTeamBDead() >= PlayersPerTeam)
+		{
+			// Team B loses the round
+			WinRound(TEAMS::TEAM_A);
+		}
+	}
+}
+
+void AValorantCloneGameModeBase::WinRound(TEAMS team)
+{
+	UWorld* world = GetWorld();
+	if (!world) return;
+
+	if (AValorantCloneGameState* ValorantGameState = Cast<AValorantCloneGameState>(world->GetGameState()))
+	{
+		ValorantGameState->TeamWinRound(team);
+		if (ValorantGameState->GetNumTeamAWins() >= NumRoundsToWin ||
+			ValorantGameState->GetNumTeamBWins() >= NumRoundsToWin)
+		{
+			SetInProgressMatchState(InProgressStates::GameEnded);
+		} else
+		{
+			SetInProgressMatchState(InProgressStates::RoundRestarting);
+		}
 	}
 }

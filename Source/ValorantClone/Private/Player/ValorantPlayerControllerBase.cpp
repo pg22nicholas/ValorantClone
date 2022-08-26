@@ -17,36 +17,29 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 
 	AValorantCloneGameModeBase* GameMode = Cast<AValorantCloneGameModeBase>(UGameplayStatics::GetGameMode(world));
 	if (!GameMode) return;
-
 	
-
-	// TODO: use player state player type instead ***
-	TSubclassOf<AValorantPlayerBase> PlayerCharacter;
-
-	int rand = UKismetMathLibrary::RandomIntegerInRange(0, 1);
-	if (rand == 0)
+	// If no player state, then set new team for player randomly
+	AValorantPlayerStateBase* ValoPlayerState = Cast<AValorantPlayerStateBase>(PlayerState);
+	if (!ValoPlayerState) return;
+	
+	if (IsPlayerFirstSpawn)
 	{
-		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_2);
-	} else
-	{
-		PlayerCharacter = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_1);
+		ValoPlayerState->Team = IsTeamA ? TEAMS::TEAM_A : TEAMS::TEAM_B;
+		// flip-flop team
+		IsTeamA = !IsTeamA;
 	}
-
-	TEAMS team = IsTeamA ? TEAMS::TEAM_A : TEAMS::TEAM_B;
-	// flip-flop team
-	IsTeamA = !IsTeamA;
 	
-	//TSubclassOf<AValorantPlayerBase> PlayerCharacter = GameMode->GetPlayerCharacterType(MyPlayerState->GetPlayerType());
-
+	IsPlayerFirstSpawn = false;
+	
 	FActorSpawnParameters spawnParams;
 	spawnParams.Owner = this;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	
-	FTransform spawnTransform = GameMode->GetSpawnPoint(team);
-	OwningCharacter = Cast<AValorantPlayerBase>(world->SpawnActor(PlayerCharacter, &spawnTransform, spawnParams));
+	FTransform spawnTransform = GameMode->GetSpawnPoint(ValoPlayerState->Team);
+	OwningCharacter = Cast<AValorantPlayerBase>(world->SpawnActor(PlayerClassType, &spawnTransform, spawnParams));
 	if (OwningCharacter)
 	{
-		OwningCharacter->SetTeam(team);
+		OwningCharacter->SetPlayerState(ValoPlayerState);
 		
 		APawn* CachedPawn = GetPawn();
 		Possess(OwningCharacter);
@@ -62,3 +55,22 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 }
 
 
+void AValorantPlayerControllerBase::SER_SetupPlayer_Implementation()
+{
+	UWorld* world = GetWorld();
+	if (!world) return;
+
+	AValorantCloneGameModeBase* GameMode = Cast<AValorantCloneGameModeBase>(UGameplayStatics::GetGameMode(world));
+	if (!GameMode) return;
+
+	int rand = UKismetMathLibrary::RandomIntegerInRange(0, 1);
+	if (rand == 0)
+	{
+		PlayerClassType = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_2);
+	} else
+	{
+		PlayerClassType = GameMode->GetPlayerCharacterType(PLAYABLE_CHARACTERS::PLAYER_1);
+	}
+	
+	SER_SpawnPlayer();
+}

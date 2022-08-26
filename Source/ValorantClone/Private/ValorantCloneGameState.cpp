@@ -3,7 +3,9 @@
 
 #include "ValorantCloneGameState.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "ValorantClone/ValorantCloneGameModeBase.h"
 
 void AValorantCloneGameState::SetInProgressMatchState(FName NewInProgressState)
 {
@@ -36,10 +38,59 @@ bool AValorantCloneGameState::IsMatchValorantRestartingMap()
 	return InProgressMatchState == InProgressStates::RoundRestarting;
 }
 
-bool AValorantCloneGameState::IsMatchNotInProgress()
+bool AValorantCloneGameState::IsMatchValorantNotInProgress()
 {
 	return InProgressMatchState == InProgressStates::NotInProgress;
 }
+
+bool AValorantCloneGameState::IsMatchEnded()
+{
+	return InProgressMatchState == InProgressStates::GameEnded;
+}
+
+void AValorantCloneGameState::PlayerDied(TEAMS team)
+{
+	if (team == TEAMS::TEAM_A)
+	{
+		NumTeamADead++;
+	} else
+	{
+		NumTeamBDead++;
+	}
+}
+
+uint8 AValorantCloneGameState::GetNumTeamADead()
+{
+	return NumTeamADead;
+}
+
+uint8 AValorantCloneGameState::GetNumTeamBDead()
+{
+	return NumTeamBDead;
+}
+
+uint8 AValorantCloneGameState::GetNumTeamAWins()
+{
+	return TeamAWins;
+}
+
+uint8 AValorantCloneGameState::GetNumTeamBWins()
+{
+	return TeamBWins;
+}
+
+void AValorantCloneGameState::TeamWinRound(TEAMS team)
+{
+	Round++;
+	if (team == TEAMS::TEAM_A)
+	{
+		TeamAWins++;
+	} else
+	{
+		TeamBWins++;
+	}
+}
+
 
 void AValorantCloneGameState::OnRep_InProgressMatchState()
 {
@@ -59,6 +110,9 @@ void AValorantCloneGameState::OnRep_InProgressMatchState()
 	} else if (InProgressMatchState == InProgressStates::RoundRestarting)
 	{
 		// TODO:?
+	} else if (InProgressMatchState == InProgressStates::GameEnded)
+	{
+		// TODO?
 	}
 }
 

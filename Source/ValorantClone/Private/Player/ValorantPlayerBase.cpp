@@ -3,6 +3,7 @@
 
 #include "Player/ValorantPlayerBase.h"
 
+#include "ValorantCloneGameState.h"
 #include "Ability/SkillManager.h"
 #include "Interfaces/WeaponInterface.h"
 #include "Components/CapsuleComponent.h"
@@ -52,6 +53,11 @@ AValorantPlayerBase::AValorantPlayerBase()
 void AValorantPlayerBase::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
+	AValorantPlayerStateBase* ValoPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (!ValoPlayerState)
+	{
+		ValoPlayerState->Team = Team;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -134,13 +140,58 @@ void AValorantPlayerBase::SetDamage(float Damage, FVector HitLocation, const UDa
 
 		if (ValorantPlayerState->GetCurrHealth() <= 0)
 		{
+			UWorld* world = GetWorld();
+			if (!world) return;
+			
+			if (AValorantCloneGameState* ValorantGamestate = Cast<AValorantCloneGameState>(world->GetGameState()))
+			{
+				ValorantGamestate->PlayerDied(Team);
+			}
 			Destroy(); 
 		}
 	}
 }
 
+AValorantCloneGameState* AValorantPlayerBase::GetValoGameState()
+{
+	UWorld* world = GetWorld();
+	if (world)
+	{
+		return Cast<AValorantCloneGameState>(world->GetGameState());
+	}
+	return nullptr;
+}
+
+bool AValorantPlayerBase::IsStateCanMoveInput()
+{
+	if (AValorantCloneGameState* ValoGameState = GetValoGameState())
+	{
+		return ValoGameState->IsMatchValorantInProgress();
+	}
+	return false;
+}
+
+bool AValorantPlayerBase::IsStateCanAttack()
+{
+	if (AValorantCloneGameState* ValoGameState = GetValoGameState())
+	{
+		return ValoGameState->IsMatchValorantInProgress();
+	}
+	return false;
+}
+
+bool AValorantPlayerBase::IsStateCanBuy()
+{
+	if (AValorantCloneGameState* ValoGameState = GetValoGameState())
+	{
+		return ValoGameState->IsMatchValorantBuying();
+	}
+	return false;
+}
+
 void AValorantPlayerBase::Shoot_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	if (Weapon->GetClass() == nullptr) return;
 	
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");
@@ -156,6 +207,7 @@ void AValorantPlayerBase::Shoot_Implementation()
 
 void AValorantPlayerBase::MoveForward(float Value)
 {
+	if (!IsStateCanMoveInput()) return;
 	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
 	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Value != 0.0f)
@@ -167,6 +219,7 @@ void AValorantPlayerBase::MoveForward(float Value)
 
 void AValorantPlayerBase::MoveRight(float Value)
 {
+	if (!IsStateCanMoveInput()) return;
 	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
 	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Value != 0.0f)
@@ -177,7 +230,7 @@ void AValorantPlayerBase::MoveRight(float Value)
 }
 
 void AValorantPlayerBase::YawInput(float Val)
-{
+{ 
 	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
 	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Val != 0.0f)
@@ -198,31 +251,37 @@ void AValorantPlayerBase::PitchInput(float Val)
 
 void AValorantPlayerBase::OnAbility1Pressed_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityUsed(0);
 }
 
 void AValorantPlayerBase::OnAbility1Released_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityFinished(0);
 }
 
 void AValorantPlayerBase::OnAbility2Pressed_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityUsed(1);
 }
 
 void AValorantPlayerBase::OnAbility2Released_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityFinished(1);
 }
 
 void AValorantPlayerBase::OnUltimatePressed_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityUsed(2);
 }
 
 void AValorantPlayerBase::OnUltimateReleased_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityFinished(2);
 }
 
