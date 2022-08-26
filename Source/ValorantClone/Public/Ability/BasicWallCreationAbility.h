@@ -21,7 +21,7 @@ class VALORANTCLONE_API ABasicWallCreationAbility : public AAbilityBase
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UStaticMesh* WallObject;
+	TSubclassOf<AActor> WallObject;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FVector ObjectScale;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

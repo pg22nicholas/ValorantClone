@@ -38,12 +38,11 @@ bool ABasicWallCreationAbility::PerformAbility()
 		false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, HitResult, true))
 	{
 		FVector HitLocation = HitResult.Location;
+		FRotator rotation = GetActorRotation();
 		
 		// spawning the wall mesh where the player is aiming
-		AStaticMeshActor* NewWall = world->SpawnActor<AStaticMeshActor>(HitLocation, GetActorRotation());
-		NewWall->SetMobility(EComponentMobility::Movable);
-		NewWall->GetStaticMeshComponent()->SetStaticMesh(WallObject);
-		NewWall->GetStaticMeshComponent()->SetRelativeScale3D(ObjectScale);
+		AActor* NewWall = world->SpawnActor<AActor>(WallObject, HitLocation, rotation);
+		NewWall->SetActorRelativeScale3D(ObjectScale);
 		NewWall->SetLifeSpan(WallDuration);
 	}
 	
