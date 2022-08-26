@@ -37,7 +37,6 @@ void ABullet::OnProjectileHit(AActor* SelfActor, AActor* OtherActor, FVector Nor
 {
 	if (GetLocalRole() < ROLE_Authority) return;
 	
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Green, "Bullet hit");
 	APawn* instigator = Cast<APawn>(GetInstigator());
 	if (!instigator) return;
 
