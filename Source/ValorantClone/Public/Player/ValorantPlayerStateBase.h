@@ -35,6 +35,8 @@ public:
 
 	float GetMaxHealth() { return MaxHealth; }
 
+	void ResetRoundState();
+
 	TEAMS Team;
 
 protected:

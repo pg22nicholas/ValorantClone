@@ -28,6 +28,8 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 		// flip-flop team
 		IsTeamA = !IsTeamA;
 	}
+
+	ValoPlayerState->ResetRoundState();
 	
 	IsPlayerFirstSpawn = false;
 	
