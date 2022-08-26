@@ -9,6 +9,7 @@
 #include "ValorantHUD.h"
 #include "player/ValorantPlayerStateBase.h"
 #include "Weapon/WeaponBase.h"
+#include "Weapon/WeaponData.h"
 
 // Sets default values
 AValorantPlayerBase::AValorantPlayerBase()
@@ -46,29 +47,17 @@ void AValorantPlayerBase::BeginPlay()
 {
 	Super::BeginPlay();
 	OnTakeAnyDamage.AddDynamic(this, &AValorantPlayerBase::SetDamage);
+
 	
-	UWorld * World = GetWorld();
-	if (!World) return;
-	
-	APlayerController * PlayerController = World->GetFirstPlayerController();
-	if (!PlayerController) return;
-
-	AValorantHUD* HUD = PlayerController->GetHUD<AValorantHUD>();
-	if (!HUD) return;
-
-	UPlayerWidget* Widget = HUD->PlayerWidget;
-	if (!Widget) return;
-
-	PlayerWidget = Widget;
-
-	PlayerWidget->MaxHealthText->SetText(FText::AsNumber(Max_Health)); 
-}
+	// Setup Primary Secondary and Current Weapon
+	SetWeaponOnStart(); 
+} 
 
 
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AValorantPlayerBase, Health);
+	DOREPLIFETIME(AValorantPlayerBase, Health); 
 }
 
 void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -79,6 +68,7 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AValorantPlayerBase::StopShooting); 
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AValorantPlayerBase::Reload);  
 	PlayerInputComponent->BindAction("PickUp", IE_Pressed, this, &AValorantPlayerBase::PickUp);
+	PlayerInputComponent->BindAction("Test", IE_Pressed, this, &AValorantPlayerBase::Test);
 	
 	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &AValorantPlayerBase::SwitchWeapon);  
  
@@ -91,23 +81,31 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+
+	
 }
+
 
 void AValorantPlayerBase::SetDamage_Implementation(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 	AController* InstigatedBy, AActor* DamageCauser)
 {
 	Health -= Damage;
-
-	if (PlayerWidget)
-	{
-		PlayerWidget->CurrentHealthText->SetText(FText::AsNumber(Health));
-	} 
 	
 	if (Health <= 0)
 	{ 
 		Destroy(); 
 	}
 }
+
+void AValorantPlayerBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+}
+
+
+
+// WEAPON USE FUNCTIONS
 
 void AValorantPlayerBase::Shoot_Implementation() 
 {
@@ -149,66 +147,167 @@ void AValorantPlayerBase::Reload_Implementation()
 	}
 }
 
+
+// WEAPON CHANGE FUNCTIONS
+
+
 void AValorantPlayerBase::PickUp_Implementation()
 {
 	if (!PickUpWeapon) return;
 	if (!PickUpWeapon->WeaponData) return;
 
-	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
-	{
-		if (weaponBase->WeaponData == PickUpWeapon->WeaponData) return;
-	}
-	
-	if (AValorantPlayerStateBase* ValorantState =  GetPlayerState<AValorantPlayerStateBase>())
-	{
-		
-		ValorantState->GetNewWeapon(PickUpWeapon->WeaponData); 
-	}
+
+	// stop if current is the same
+    if (PickUpWeapon->WeaponData == PrimaryWeapon || PickUpWeapon->WeaponData == SecondaryWeapon) return;
+
+	// Add it 
+	AddWeaponToArsenal(PickUpWeapon->WeaponData);
 	
 	PickUpWeapon->PickedUp();     
 }
 
+// Swap Weapons
 void AValorantPlayerBase::SwitchWeapon_Implementation()  
 {
-	AValorantPlayerStateBase* ValorantState = GetPlayerState<AValorantPlayerStateBase>();
-	if (!ValorantState) return;
 
-	ValorantState->SwitchWeapon();
-
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, "Switch"); 
+	// Swap Weapons (Secondary and Primary)
+	if (!PrimaryWeapon && SecondaryWeapon) return;
 	
-	if (!ValorantState->CurrentWeapon) return;  
+	if (PrimaryWeapon == CurrentWeapon)
+	{
+		CurrentWeapon = SecondaryWeapon;
+	}
+	else CurrentWeapon = PrimaryWeapon;
 
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, (ValorantState->CurrentWeapon->WeaponName).ToString()); 
 
+	if (!CurrentWeapon) return; 
+	
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, "Switch"); 
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, (CurrentWeapon->WeaponName).ToString()); 
+
+	Money --;
+	
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Black, FString::FromInt(Money) + " Money");
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Black, FString::FromInt(CurrentWeapon->CurrentProjectileNum)+ " Bullets"); 
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Black, FString::FromInt(Health)+ " HP");   
 	
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor())) 
 	{
-		weaponBase->WeaponData = ValorantState->CurrentWeapon;
-
+		// set WeaponData on current weapon to new WeaponData 
+		weaponBase->WeaponData = CurrentWeapon;
+		
 		weaponBase->Equip(); 
 	}
 }
 
+// Drop Current Weapon
 void AValorantPlayerBase::DropWeapon_Implementation(UWeaponData* WeaponData)
 {
-	AValorantPlayerStateBase* ValorantState = GetPlayerState<AValorantPlayerStateBase>();
-	if (!ValorantState) return;
+	
+	// Spawn Parameters for dropped Weapon
+	FTransform SpawnTransform = GetTransform();
+	FActorSpawnParameters SpawnParams;
+	
 
+	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Spawned Old Weapon") ;    
+
+	// Spawn Dropped Weapon on the same place
+	GetWorld()->SpawnActor<ADroppedWeapon>(DroppedWeapon, SpawnTransform, SpawnParams)->WeaponData = WeaponData; 
+	
+}
+
+
+void AValorantPlayerBase::AddWeaponToArsenal_Implementation(UWeaponData* WeaponData)  
+{
+	// Equip Purchased Weapon 
 	if (AWeaponBase* WeaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
-
-		FTransform SpawnTransform = GetTransform();
-		FActorSpawnParameters SpawnParams;
-		
-	
-		GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Spawned Old Weapon") ;    
-		
-		GetWorld()->SpawnActor<ADroppedWeapon>(DroppedWeapon, SpawnTransform, SpawnParams)->WeaponData = WeaponData; 
-
-		
+		WeaponBase->WeaponData = WeaponData; 
 	}
+		
+	// Drop Previous Weapon
+	// Add Weapon to collection
+	if (WeaponData->PrimaryWeapon)
+	{
+		if (PrimaryWeapon)
+			DropWeapon(PrimaryWeapon);
+		PrimaryWeapon = WeaponData;
+	}
+	else
+	{
+		if (SecondaryWeapon)
+			DropWeapon(SecondaryWeapon); 
+		SecondaryWeapon = WeaponData;
+	}
+}
+
+void AValorantPlayerBase::SetWeaponOnStart_Implementation() 
+{
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor())) 
+	{
+		if (!weaponBase->WeaponData) return; 
+
+		// Check what is the initial WeaponData on Owning Weapon (Set In Blueprint)
+		if (weaponBase->WeaponData->PrimaryWeapon)
+		{
+			PrimaryWeapon = weaponBase->WeaponData;
+			CurrentWeapon = PrimaryWeapon;
+		}
+		else
+		{
+			SecondaryWeapon = weaponBase->WeaponData;
+			CurrentWeapon = SecondaryWeapon;  
+		}
+
+		if (!CurrentWeapon)
+		{
+			return;
+		}
+		
+		// set HUD values for current weapon 
+		return;
+		PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(CurrentWeapon->CurrentProjectileNum));
+		PlayerWidget->MagazineText->SetText(FText::AsNumber(CurrentWeapon->Magazine));
+		PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(CurrentWeapon->AllAmmo));  
+	}
+}
+
+void AValorantPlayerBase::BuyWeapon_Implementation(UWeaponData* WeaponData)
+{
+	// Mo Money case:
+	if (Money < WeaponData->WeaponPrice)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Not Enough Money");
+		return;  
+	}
+
+	// Already owned:
 	
+	if (PrimaryWeapon == WeaponData || SecondaryWeapon == WeaponData)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Weapon Exists"); 
+		return;
+	}
+    
+	
+	// Money decrement
+	Money-=WeaponData->WeaponPrice;
+	
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald , "Purchased"); 
+	
+	AddWeaponToArsenal(WeaponData);  
+}
+
+
+
+// MOVING FUNCTIONS
+
+
+void AValorantPlayerBase::Test_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, "Test");
+
+	Health --; 
 }
 
 void AValorantPlayerBase::MoveForward(float Value)

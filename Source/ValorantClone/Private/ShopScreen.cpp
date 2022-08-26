@@ -4,7 +4,6 @@
 #include "ShopScreen.h"
 #include "Components/Button.h"
 #include "Components/ListView.h"
-#include "player/ValorantPlayerStateBase.h"
 #include "ValorantClone/ValorantCloneGameModeBase.h"
 
 
@@ -12,6 +11,11 @@ void UShopScreen::NativeOnInitialized()
 {
 	Super::NativeOnInitialized(); 
 	
+	SetupStore();  
+}
+
+void UShopScreen::SetupStore() 
+{ 
 	UWorld* world = GetWorld();
 
 	if (!world) return;
@@ -22,8 +26,7 @@ void UShopScreen::NativeOnInitialized()
 	
 	if (AValorantCloneGameModeBase* gameMode = world->GetAuthGameMode<AValorantCloneGameModeBase>())
 	{
-		int32 lol = gameMode->AllWeapons.Num();
-
+		 
 		TArray<UWeaponData*> PrimaryWeaponList; 
 		TArray<UWeaponData*> SecondaryWeaponList; 
 
@@ -38,10 +41,10 @@ void UShopScreen::NativeOnInitialized()
 		
 		PrimaryWeapons->SetListItems<UWeaponData*>(PrimaryWeaponList);   
 
-		SecondaryWeapons->SetListItems<UWeaponData*>(SecondaryWeaponList);  
-	} 
+		SecondaryWeapons->SetListItems<UWeaponData*>(SecondaryWeaponList); 
 
-	
+		//GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald, FString::FromInt(PrimaryWeaponList.Num())); 
+	} 
 }
 
 void UShopScreen::PurchasePrimaryWeapon_Implementation()
@@ -52,10 +55,13 @@ void UShopScreen::PurchasePrimaryWeapon_Implementation()
 
 	APlayerController * PlayerController = world->GetFirstPlayerController();
 	if (!PlayerController) return;
+
+	AValorantPlayerBase* PlayerBase = PlayerController->GetPawn<AValorantPlayerBase>();
+	if (!PlayerBase) return;
 	
 	if (UWeaponData* SelectedWeapon = PrimaryWeapons->GetSelectedItem<UWeaponData>())
 	{
-		PlayerController->GetPlayerState<AValorantPlayerStateBase>()->BuyWeapon(SelectedWeapon); 
+		PlayerBase->BuyWeapon(SelectedWeapon);
 	}
 }
 
@@ -65,10 +71,13 @@ void UShopScreen::PurchaseSecondaryWeapon_Implementation()
 	if (!world) return;
 
 	APlayerController * PlayerController = world->GetFirstPlayerController();
-	if (!PlayerController) return; 
+	if (!PlayerController) return;
+
+	AValorantPlayerBase* PlayerBase = PlayerController->GetPawn<AValorantPlayerBase>();
+	if (!PlayerBase) return;
 	
 	if (UWeaponData* SelectedWeapon = SecondaryWeapons->GetSelectedItem<UWeaponData>())
 	{
-		PlayerController->GetPlayerState<AValorantPlayerStateBase>()->BuyWeapon(SelectedWeapon); 
+		PlayerBase->BuyWeapon(SelectedWeapon); 
 	}
 }

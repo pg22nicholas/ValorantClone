@@ -37,7 +37,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data") 
 	int32 Magazine = 10;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)   
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")    
 	int32 CurrentProjectileNum = 0 ;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")

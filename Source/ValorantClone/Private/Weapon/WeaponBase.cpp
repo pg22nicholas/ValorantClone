@@ -6,9 +6,6 @@
 #include "Components/ArrowComponent.h"
 #include "Components/SceneComponent.h"
 #include "Weapon/WeaponData.h"
-#include "PlayerWidget.h"
-#include "Components/SphereComponent.h"
-#include "ValorantHUD.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/HUD.h"
 #include "player/ValorantPlayerStateBase.h"
@@ -46,12 +43,8 @@ void AWeaponBase::Fire()
 		Reload();  
 		return;
 	}
-
-	if(!PlayerWidget) return;
 	
 	WeaponData->CurrentProjectileNum --;  
-
-	PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(WeaponData->CurrentProjectileNum));  
 	
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");    
 
@@ -97,16 +90,11 @@ void AWeaponBase::Reload()
 		WeaponData->AllAmmo -= WeaponData->Magazine;
 	}
 	
-	PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(WeaponData->AllAmmo));  
-	PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(WeaponData->CurrentProjectileNum)); 
 }
 
 
 void AWeaponBase::Equip()
 {
-	PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(WeaponData->AllAmmo));  
-	PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(WeaponData->CurrentProjectileNum));
-	PlayerWidget->MagazineText->SetText(FText::AsNumber(WeaponData->Magazine)); 
 
 	if (WeaponData->WeaponMesh)
 	{
@@ -116,30 +104,13 @@ void AWeaponBase::Equip()
 
 void AWeaponBase::BeginPlay() 
 {
-	if (!WeaponData) return; 
-	WeaponData->CurrentProjectileNum = WeaponData->Magazine; 
 	Super::BeginPlay();
-	
-	UWorld * World = GetWorld();
-	if (!World) return;
-	
-	APlayerController * PlayerController = World->GetFirstPlayerController();
-	if (!PlayerController) return;
 
-	AValorantHUD* HUD = PlayerController->GetHUD<AValorantHUD>();
-	if (!HUD) return;
-
-	UPlayerWidget* Widget = HUD->PlayerWidget;
-	if (!Widget) return;
-
-	PlayerWidget = Widget;
-
-	PlayerWidget->MagazineText->SetText(FText::AsNumber(WeaponData->Magazine));
-	PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(WeaponData->AllAmmo));
-	
+	if (!WeaponData) return; 
+	//WeaponData->CurrentProjectileNum = WeaponData->Magazine;  
 	
 }
-
+ 
 
 
 

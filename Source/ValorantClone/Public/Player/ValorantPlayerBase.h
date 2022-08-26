@@ -7,12 +7,11 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "Weapon/DroppedWeapon.h"
-#include "Weapon/WeaponData.h"
 #include "ValorantPlayerBase.generated.h"
 
 class UChildActorComponent; 
 class UPlayerWidget;
-class UWeaponData;
+class UWeaponData; 
 
 UCLASS()
 class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagingInterface
@@ -28,7 +27,6 @@ class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagin
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* MeshBody;
 
- 
 
 public:
 	UPROPERTY(VisibleDefaultsOnly, Category=Weapon)
@@ -62,11 +60,37 @@ protected:
 
 public:	
 	
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)  
+	UPROPERTY( Replicated, EditAnywhere, BlueprintReadOnly, meta=(ClampMin = -1, ClampMax = 1000), Category="Stats")  
 	float Max_Health = 100.0f;
 	
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite) 
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, meta=(ClampMin = -1, ClampMax = 1000), Category="Stats") 
 	float Health = 100.0f;
+	 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin = -1), Category="Stats" )       
+	int32 Money = 100; 
+
+	UPROPERTY(EditAnywhere ,Category="OwnedWeapons")
+	UWeaponData* CurrentWeapon;
+
+	UPROPERTY(EditAnywhere, Category="OwnedWeapons")
+	UWeaponData* PrimaryWeapon;
+
+	UPROPERTY(EditAnywhere, Category="OwnedWeapons")
+	UWeaponData* SecondaryWeapon;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="DropWeapon")  
+	TSubclassOf<ADroppedWeapon> DroppedWeapon;
+	
+	UPROPERTY(EditAnywhere, Category="DropWeapon") 
+	ADroppedWeapon* PickUpWeapon;
+	
+	UPROPERTY()
+	UPlayerWidget* PlayerWidget;
+
+	UFUNCTION(Server, Reliable)
+	void BuyWeapon(UWeaponData* WeaponData);  
+	
+protected:
 
 	UFUNCTION(Server, Reliable)
 	void DropWeapon ( UWeaponData* WeaponData);
@@ -74,11 +98,9 @@ public:
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 	void PickUp ();
 
-	UPROPERTY(EditAnywhere) 
-	ADroppedWeapon* PickUpWeapon;  
-
-protected:
-
+	UFUNCTION(Client, Reliable) 
+	void Test();
+	
 	UFUNCTION(Server, Reliable)
 	void SetDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
@@ -90,9 +112,16 @@ protected:
 
 	UFUNCTION(Server, Reliable, BlueprintCallable) 
 	void Reload();
+	
+	UFUNCTION(Server, Reliable)
+	void SwitchWeapon();
+	
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void AddWeaponToArsenal(UWeaponData* WeaponData); 
 
 	UFUNCTION(Server, Reliable)
-	void SwitchWeapon();   
+	void SetWeaponOnStart();
+	
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
 
@@ -110,15 +139,11 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
-	
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)  
-	TSubclassOf<ADroppedWeapon> DroppedWeapon; 
 
-
+	virtual void Tick(float DeltaSeconds) override;
 	
-	UPROPERTY()
-	UPlayerWidget* PlayerWidget;
 };
+
+
 
 

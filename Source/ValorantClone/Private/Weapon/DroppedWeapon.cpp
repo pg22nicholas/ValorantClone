@@ -9,9 +9,13 @@
 ADroppedWeapon::ADroppedWeapon()
 {
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SPHERE")); 
-	SphereCollision->SetupAttachment(WeaponMesh); 
+	SphereCollision->SetupAttachment(WeaponMesh);
+
+	bReplicates = true;
+
 }
 
+// When Weapon is picked Up 
 void ADroppedWeapon::PickedUp()
 {
 	// maybe Sound
@@ -44,11 +48,17 @@ void ADroppedWeapon::DisAllowPickUp_Implementation(UPrimitiveComponent* Overlapp
 	{
 		PlayerBase->PickUpWeapon = nullptr; 
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "DisAllow Pick Up");
-		ADroppedWeapon::K2_DestroyActor();     
+		//ADroppedWeapon::K2_DestroyActor(); 
+		DestroyWeapon(); 
 	}
 
 	
 	
+}
+
+void ADroppedWeapon::DestroyWeapon_Implementation()
+{
+	Destroy(); 
 }
 
 void ADroppedWeapon::BeginPlay()
@@ -59,6 +69,5 @@ void ADroppedWeapon::BeginPlay()
 
 	SphereCollision->OnComponentEndOverlap.AddDynamic(this, &ADroppedWeapon::DisAllowPickUp);
 	
-	bReplicates = true; 
-	//ADroppedWeapon::K2_DestroyActor();  
+	//ADroppedWeapon::K2_DestroyActor();   
 }

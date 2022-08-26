@@ -7,9 +7,6 @@
 #include "ValorantClone/ValorantCloneGameModeBase.h"
 #include "ValorantPlayerStateBase.generated.h"
 
-UDELEGATE()
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPurchaseEvent, int32, Money);
-
 /**
  * 
  */
@@ -30,32 +27,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)  
 	float CurHealth = 100; 
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
-	int32 Money = 100;
-
-	UFUNCTION(Server, Reliable) 
-	void BuyWeapon(UWeaponData* Weapon);  
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
-	UWeaponData* PrimaryWeapon;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)  
-	UWeaponData* SecondaryWeapon;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)  
-	UWeaponData* CurrentWeapon;
 	
 	void SetPlayerType(PLAYABLE_CHARACTERS playerType) { PlayerType = playerType; }
 	PLAYABLE_CHARACTERS GetPlayerType() { return PlayerType; }
 
-	UPROPERTY()
-	FPurchaseEvent PurchaseDelegate;
 
-	UFUNCTION(Server, Reliable,BlueprintCallable)
-	void SwitchWeapon();
-
-	UFUNCTION(Server, Reliable,BlueprintCallable)
-	void GetNewWeapon(UWeaponData* WeaponData); 
 	
 private:
 	
@@ -63,5 +39,6 @@ private:
 	PLAYABLE_CHARACTERS PlayerType;
 
 	virtual void BeginPlay() override;
+
 	
 };

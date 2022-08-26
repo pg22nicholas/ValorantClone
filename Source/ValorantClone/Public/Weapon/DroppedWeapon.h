@@ -39,5 +39,9 @@ public:
 						UPrimitiveComponent* OtherComp,
 						int32 OtherBodyIndex); 
 
+
+	UFUNCTION(Reliable, Server)
+	void DestroyWeapon(); 
+	
 	virtual void BeginPlay() override;
 };

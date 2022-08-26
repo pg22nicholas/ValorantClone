@@ -35,6 +35,9 @@ public:
 	
 	virtual  void NativeOnInitialized() override;
 
+	UFUNCTION()
+	void SetupStore(); 
+
 	UFUNCTION(Server, Reliable)
 	void PurchasePrimaryWeapon();
 

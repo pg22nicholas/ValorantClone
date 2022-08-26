@@ -41,6 +41,7 @@ public:
 	
 	UFUNCTION()
 	void Equip();
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -53,9 +54,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USceneComponent* Barrel;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)   
-	UPlayerWidget* PlayerWidget;
 	
 	UPROPERTY()
 	FTimerHandle TimerHandle;

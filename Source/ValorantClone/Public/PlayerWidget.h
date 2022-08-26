@@ -9,6 +9,7 @@
 #include "PlayerWidget.generated.h" 
 
 
+class AValorantPlayerBase; 
 class UTextBlock;
 class UProgressBar; 
 /**
@@ -43,9 +44,12 @@ public:
 	UTextBlock * MoneyText;
 
 protected:
-
-	UFUNCTION()
-	void ChangeMoneyText(int32 Money) ;    
 	
 	virtual  void NativeOnInitialized() override;
+
+	UFUNCTION()
+	FText GetPlayerHealth();
+	
+	
+	
 };

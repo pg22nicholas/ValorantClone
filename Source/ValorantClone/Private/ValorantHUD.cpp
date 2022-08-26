@@ -3,8 +3,9 @@
 
 #include "ValorantHUD.h"
 #include "ShopScreen.h" 
-#include "PlayerWidget.h" 
+#include "PlayerWidget.h"
 #include "Blueprint/UserWidget.h"
+
 
 
 void AValorantHUD::BeginPlay()
@@ -20,9 +21,9 @@ void AValorantHUD::BeginPlay()
 	if (!PlayerWidget) 
 	{
 		PlayerWidget = CreateWidget<UPlayerWidget>(GetOwningPlayerController(), PlayerWidgetClass, TEXT ("PlayerWidget"));
-		ShopScreen = CreateWidget<UShopScreen>(GetOwningPlayerController(), ShopScreenClass, TEXT ("STORE"));
 		PlayerWidget->AddToViewport(5); 
-	} 
+	}
+	
 }
 
 AValorantHUD::AValorantHUD()
