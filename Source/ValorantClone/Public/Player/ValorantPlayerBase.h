@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ValorantCloneGameState.h"
 #include "Interfaces/DamagingInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "ValorantClone/ValorantCloneGameModeBase.h"
 #include "ValorantPlayerBase.generated.h"
 
 class UChildActorComponent;
@@ -55,6 +57,9 @@ public:
 	USkillManager* SkillManager;
 
 	virtual void OnRep_PlayerState() override;
+
+	TEAMS GetTeam();
+	void SetTeam(TEAMS team);
 	
 protected:
 	// Called when the game starts or when spawned
@@ -73,6 +78,11 @@ protected:
 	UFUNCTION()
 	void SetDamagePoint(AActor* DamagedActor, float Damage, class AController* InstigatedBy, FVector HitLocation,
 		UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
+
+	UFUNCTION()
+	void SetDamageRadial(AActor* DamagedActor, float Damage, const UDamageType* DamageType, FVector Origin,
+		FHitResult HitInfo, AController* InstigatedBy, AActor* DamageCauser);
+	
 
 	UFUNCTION(Server, Reliable)
 	void Shoot();
@@ -117,4 +127,16 @@ private:
 	UPROPERTY()
 	AValorantPlayerStateBase* ValorantPlayerState;
 
+	UPROPERTY(Replicated)
+	TEAMS Team;
+
+	void SetDamage(float Damage, FVector HitLocation, const UDamageType* DamageType, AActor* DamageCauser);
+
+	AValorantCloneGameState* GetValoGameState();
+	bool IsStateCanMoveInput();
+	bool IsStateCanAttack();
+	bool IsStateCanBuy();
+
 };
+
+

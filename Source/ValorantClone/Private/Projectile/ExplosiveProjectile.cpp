@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "DamageTypes/BaseDamageType.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -35,11 +36,14 @@ void AExplosiveProjectile::BeginPlay()
 
 void AExplosiveProjectile::Explode()
 {
+	Destroy();
 	// TODO: Sound and VFX?
 }
 
-void AExplosiveProjectile::OnProjectileHit_Implementation(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+void AExplosiveProjectile::OnProjectileHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (GetLocalRole() < ROLE_Authority) return;
+	
 	UWorld* world = GetWorld();
 	if (!world) return;
 
@@ -56,7 +60,7 @@ void AExplosiveProjectile::OnProjectileHit_Implementation(AActor* SelfActor, AAc
 	if(OtherActor->GetClass()->ImplementsInterface(UDamagingInterface::StaticClass()))
 	{
 		UGameplayStatics::ApplyRadialDamage(world, HitDamage, Hit.Location,
-			ExplosionRadius, UDamageType::StaticClass(), TArray<AActor*>(), owner, instigator->GetController());
+			ExplosionRadius, UBaseDamageType::StaticClass(), TArray<AActor*>(), owner, instigator->GetController());
 	}
 	Explode(); 
 }

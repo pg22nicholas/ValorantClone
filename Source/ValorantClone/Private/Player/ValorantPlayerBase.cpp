@@ -3,6 +3,7 @@
 
 #include "Player/ValorantPlayerBase.h"
 
+#include "ValorantCloneGameState.h"
 #include "Ability/SkillManager.h"
 #include "Interfaces/WeaponInterface.h"
 #include "Components/CapsuleComponent.h"
@@ -15,6 +16,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/ValorantPlayerStateBase.h"
 #include "Weapon/WeaponBase.h"
+#include "ValorantClone/ValorantCloneGameModeBase.h"
 
 // Sets default values
 AValorantPlayerBase::AValorantPlayerBase()
@@ -51,6 +53,11 @@ AValorantPlayerBase::AValorantPlayerBase()
 void AValorantPlayerBase::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
+	AValorantPlayerStateBase* ValoPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (!ValoPlayerState)
+	{
+		ValoPlayerState->Team = Team;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -58,6 +65,7 @@ void AValorantPlayerBase::BeginPlay()
 {
 	Super::BeginPlay();
 	OnTakePointDamage.AddDynamic(this, &AValorantPlayerBase::SetDamagePoint);
+	OnTakeRadialDamage.AddDynamic(this, &AValorantPlayerBase::SetDamageRadial);
 }
 
 void AValorantPlayerBase::Stun_Implementation(float stunDuration)
@@ -108,6 +116,17 @@ void AValorantPlayerBase::SetDamagePoint(AActor* DamagedActor, float Damage,
 	AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
 	FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
 {
+	SetDamage(Damage, HitLocation, DamageType, DamageCauser);
+}
+
+void AValorantPlayerBase::SetDamageRadial(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+	FVector Origin, FHitResult HitInfo, AController* InstigatedBy, AActor* DamageCauser)
+{
+	SetDamage(Damage, HitInfo.Location, DamageType, DamageCauser);
+}
+
+void AValorantPlayerBase::SetDamage(float Damage, FVector HitLocation, const UDamageType* DamageType, AActor* DamageCauser)
+{
 	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
 	if (ValorantPlayerState && GetLocalRole() == ROLE_Authority)
 	{
@@ -120,19 +139,61 @@ void AValorantPlayerBase::SetDamagePoint(AActor* DamagedActor, float Damage,
 
 		if (ValorantPlayerState->GetCurrHealth() <= 0)
 		{
+			UWorld* world = GetWorld();
+			if (!world) return;
+			
+			if (AValorantCloneGameModeBase* ValoGameMode = Cast<AValorantCloneGameModeBase>(UGameplayStatics::GetGameMode(world)))
+			{
+				ValoGameMode->PlayerDied(this);
+			}
 			Destroy(); 
 		}
 	}
 }
 
+AValorantCloneGameState* AValorantPlayerBase::GetValoGameState()
+{
+	UWorld* world = GetWorld();
+	if (world)
+	{
+		return Cast<AValorantCloneGameState>(world->GetGameState());
+	}
+	return nullptr;
+}
+
+bool AValorantPlayerBase::IsStateCanMoveInput()
+{
+	if (AValorantCloneGameState* ValoGameState = GetValoGameState())
+	{
+		return ValoGameState->IsMatchValorantInProgress();
+	}
+	return false;
+}
+
+bool AValorantPlayerBase::IsStateCanAttack()
+{
+	if (AValorantCloneGameState* ValoGameState = GetValoGameState())
+	{
+		return ValoGameState->IsMatchValorantInProgress();
+	}
+	return false;
+}
+
+bool AValorantPlayerBase::IsStateCanBuy()
+{
+	if (AValorantCloneGameState* ValoGameState = GetValoGameState())
+	{
+		return ValoGameState->IsMatchValorantBuying();
+	}
+	return false;
+}
+
 void AValorantPlayerBase::Shoot_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	if (Weapon->GetClass() == nullptr) return;
 	
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");
-
 	if (Weapon == nullptr) return;
-	//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, LaserWeapon->GetChildActor()->GetName());
 	
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
@@ -142,6 +203,7 @@ void AValorantPlayerBase::Shoot_Implementation()
 
 void AValorantPlayerBase::MoveForward(float Value)
 {
+	if (!IsStateCanMoveInput()) return;
 	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
 	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Value != 0.0f)
@@ -153,6 +215,7 @@ void AValorantPlayerBase::MoveForward(float Value)
 
 void AValorantPlayerBase::MoveRight(float Value)
 {
+	if (!IsStateCanMoveInput()) return;
 	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
 	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Value != 0.0f)
@@ -163,7 +226,7 @@ void AValorantPlayerBase::MoveRight(float Value)
 }
 
 void AValorantPlayerBase::YawInput(float Val)
-{
+{ 
 	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
 	if (ValorantPlayerState && ValorantPlayerState->GetIsStun()) return;
 	if (Val != 0.0f)
@@ -184,37 +247,55 @@ void AValorantPlayerBase::PitchInput(float Val)
 
 void AValorantPlayerBase::OnAbility1Pressed_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityUsed(0);
 }
 
 void AValorantPlayerBase::OnAbility1Released_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityFinished(0);
 }
 
 void AValorantPlayerBase::OnAbility2Pressed_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityUsed(1);
 }
 
 void AValorantPlayerBase::OnAbility2Released_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityFinished(1);
 }
 
 void AValorantPlayerBase::OnUltimatePressed_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityUsed(2);
 }
 
 void AValorantPlayerBase::OnUltimateReleased_Implementation()
 {
+	if (!IsStateCanAttack()) return;
 	SkillManager->OnAbilityFinished(2);
+}
+
+
+TEAMS AValorantPlayerBase::GetTeam()
+{
+	return Team;
+}
+
+void AValorantPlayerBase::SetTeam(TEAMS team)
+{
+	Team = team;
 }
 
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AValorantPlayerBase, Team);
 }
 
 

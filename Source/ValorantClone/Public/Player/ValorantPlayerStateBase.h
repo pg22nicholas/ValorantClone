@@ -35,6 +35,10 @@ public:
 
 	float GetMaxHealth() { return MaxHealth; }
 
+	void ResetRoundState();
+
+	TEAMS Team;
+
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -50,5 +54,7 @@ private:
 
 	// Type of player class this player state represents
 	PLAYABLE_CHARACTERS PlayerType;
+
+	
 	
 };
