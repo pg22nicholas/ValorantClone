@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "DamageTypes/BaseDamageType.h"
 #include "player/ValorantPlayerStateBase.h"
+#include "DamageTypes/BaseDamageType.h"
 
 #include "Net/UnrealNetwork.h"
 
