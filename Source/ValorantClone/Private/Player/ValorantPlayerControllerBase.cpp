@@ -3,6 +3,7 @@
 
 #include "player/ValorantPlayerControllerBase.h"
 
+#include "ValorantCloneGameState.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -49,6 +50,11 @@ void AValorantPlayerControllerBase::SER_SpawnPlayer_Implementation()
 		
 		APawn* CachedPawn = GetPawn();
 		Possess(OwningCharacter);
+
+		if (AValorantCloneGameState* ValorantGameState = Cast<AValorantCloneGameState>(world->GetGameState()))
+		{
+			ValorantGameState->PlayerCharacters.AddUnique(OwningCharacter);
+		}
 		
 		if (CachedPawn != nullptr)
 			CachedPawn->Destroy();
