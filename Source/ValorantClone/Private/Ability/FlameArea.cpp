@@ -20,6 +20,8 @@ AFlameArea::AFlameArea()
 	BodyMesh->SetNotifyRigidBodyCollision(true);
 	BodyMesh->SetConstraintMode(EDOFMode::XYPlane);
 
+	bReplicates = true;
+
 }
 
 // Called when the game starts or when spawned
