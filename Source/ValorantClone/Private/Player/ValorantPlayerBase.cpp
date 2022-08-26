@@ -143,9 +143,9 @@ void AValorantPlayerBase::SetDamage(float Damage, FVector HitLocation, const UDa
 			UWorld* world = GetWorld();
 			if (!world) return;
 			
-			if (AValorantCloneGameState* ValorantGamestate = Cast<AValorantCloneGameState>(world->GetGameState()))
+			if (AValorantCloneGameModeBase* ValoGameMode = Cast<AValorantCloneGameModeBase>(UGameplayStatics::GetGameMode(world)))
 			{
-				ValorantGamestate->PlayerDied(Team);
+				ValoGameMode->PlayerDied(this);
 			}
 			Destroy(); 
 		}
@@ -194,10 +194,7 @@ void AValorantPlayerBase::Shoot_Implementation()
 	if (!IsStateCanAttack()) return;
 	if (Weapon->GetClass() == nullptr) return;
 	
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Cannon Shot");
-
 	if (Weapon == nullptr) return;
-	//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, LaserWeapon->GetChildActor()->GetName());
 	
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
