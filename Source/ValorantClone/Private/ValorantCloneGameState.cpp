@@ -96,6 +96,7 @@ void AValorantCloneGameState::EndRound()
 		}
 	}
 	Round++;
+	ResetRoundState();
 }
 
 void AValorantCloneGameState::ResetRoundState()

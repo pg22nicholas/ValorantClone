@@ -135,7 +135,6 @@ void AValorantPlayerBase::SetDamage(float Damage, FVector HitLocation, const UDa
 		{
 			float DamageMultiplier = BaseDamageType->ProcessDamage(DamageCauser, this, HitLocation);
 			ValorantPlayerState->SetCurrHealth(ValorantPlayerState->GetCurrHealth() - (Damage * DamageMultiplier));
-			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, FString::SanitizeFloat(ValorantPlayerState->GetCurrHealth()));
 		}
 
 		if (ValorantPlayerState->GetCurrHealth() <= 0)
