@@ -30,8 +30,8 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float HitDamage = 2.0f;
-	
-	UFUNCTION(Server, Reliable)
+
+	UFUNCTION()
 	void OnProjectileHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit); 
 
 };

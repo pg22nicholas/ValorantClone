@@ -6,6 +6,7 @@
 #include "Interfaces/DamagingInterface.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "DamageTypes/BaseDamageType.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -32,8 +33,11 @@ void ABullet::BeginPlay()
 	OnActorHit.AddDynamic(this,&ABullet::OnProjectileHit); 
 }
 
-void ABullet::OnProjectileHit_Implementation(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+void ABullet::OnProjectileHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (GetLocalRole() < ROLE_Authority) return;
+	
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Green, "Bullet hit");
 	APawn* instigator = Cast<APawn>(GetInstigator());
 	if (!instigator) return;
 
@@ -42,11 +46,11 @@ void ABullet::OnProjectileHit_Implementation(AActor* SelfActor, AActor* OtherAct
 
 	TArray<AActor*> ignoreActors;
 	ignoreActors.Add(instigator);
-	//ignoreActors.Add(owner);
 	
 	if(OtherActor->GetClass()->ImplementsInterface(UDamagingInterface::StaticClass()))
 	{
-		UGameplayStatics::ApplyDamage(OtherActor, HitDamage, instigator->GetController(), owner, UDamageType::StaticClass());
+		UGameplayStatics::ApplyPointDamage(OtherActor, HitDamage, NormalImpulse, Hit,
+			instigator->GetController(), SelfActor, UBaseDamageType::StaticClass());
 	}
 	Destroy(); 
 }

@@ -78,6 +78,11 @@ protected:
 	void SetDamagePoint(AActor* DamagedActor, float Damage, class AController* InstigatedBy, FVector HitLocation,
 		UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
 
+	UFUNCTION()
+	void SetDamageRadial(AActor* DamagedActor, float Damage, const UDamageType* DamageType, FVector Origin,
+		FHitResult HitInfo, AController* InstigatedBy, AActor* DamageCauser);
+	
+
 	UFUNCTION(Server, Reliable)
 	void Shoot();
 
@@ -124,4 +129,8 @@ private:
 	UPROPERTY(Replicated)
 	TEAMS Team;
 
+	void SetDamage(float Damage, FVector HitLocation, const UDamageType* DamageType, AActor* DamageCauser);
+
 };
+
+

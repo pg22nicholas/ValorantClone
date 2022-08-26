@@ -59,6 +59,7 @@ void AValorantPlayerBase::BeginPlay()
 {
 	Super::BeginPlay();
 	OnTakePointDamage.AddDynamic(this, &AValorantPlayerBase::SetDamagePoint);
+	OnTakeRadialDamage.AddDynamic(this, &AValorantPlayerBase::SetDamageRadial);
 }
 
 void AValorantPlayerBase::Stun_Implementation(float stunDuration)
@@ -109,6 +110,17 @@ void AValorantPlayerBase::SetDamagePoint(AActor* DamagedActor, float Damage,
 	AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
 	FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
 {
+	SetDamage(Damage, HitLocation, DamageType, DamageCauser);
+}
+
+void AValorantPlayerBase::SetDamageRadial(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+	FVector Origin, FHitResult HitInfo, AController* InstigatedBy, AActor* DamageCauser)
+{
+	SetDamage(Damage, HitInfo.Location, DamageType, DamageCauser);
+}
+
+void AValorantPlayerBase::SetDamage(float Damage, FVector HitLocation, const UDamageType* DamageType, AActor* DamageCauser)
+{
 	ValorantPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
 	if (ValorantPlayerState && GetLocalRole() == ROLE_Authority)
 	{
@@ -117,6 +129,7 @@ void AValorantPlayerBase::SetDamagePoint(AActor* DamagedActor, float Damage,
 		{
 			float DamageMultiplier = BaseDamageType->ProcessDamage(DamageCauser, this, HitLocation);
 			ValorantPlayerState->SetCurrHealth(ValorantPlayerState->GetCurrHealth() - (Damage * DamageMultiplier));
+			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, FString::SanitizeFloat(ValorantPlayerState->GetCurrHealth()));
 		}
 
 		if (ValorantPlayerState->GetCurrHealth() <= 0)
