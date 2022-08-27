@@ -5,6 +5,7 @@
 
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/ValorantPlayerBase.h"
 #include "player/ValorantPlayerControllerBase.h"
 #include "player/ValorantPlayerStateBase.h"
@@ -14,6 +15,8 @@ AValorantCloneGameModeBase::AValorantCloneGameModeBase()
 	PlayerControllerClass = AValorantPlayerControllerBase::StaticClass();
 	DefaultPawnClass = AValorantPlayerBase::StaticClass();
 	PlayerStateClass = AValorantPlayerStateBase::StaticClass();
+
+	bReplicates = true; 
 }
 
 void AValorantCloneGameModeBase::PostLogin(APlayerController* NewPlayer)
@@ -40,4 +43,9 @@ FTransform AValorantCloneGameModeBase::GetSpawnPoint(TEAMS teams) const
 		return playerStart->GetTransform();
 	}
 	return FTransform();
+}
+
+void AValorantCloneGameModeBase::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const
+{
+	DOREPLIFETIME( AValorantCloneGameModeBase, AllWeapons ); 
 }

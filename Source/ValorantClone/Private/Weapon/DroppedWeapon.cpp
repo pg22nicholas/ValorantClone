@@ -13,6 +13,7 @@ ADroppedWeapon::ADroppedWeapon()
 
 	bReplicates = true;
 
+	
 }
 
 // When Weapon is picked Up 
@@ -21,6 +22,7 @@ void ADroppedWeapon::PickedUp()
 	// maybe Sound
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "Picked  Up");  
 	
+	Destroy();  
 }
 
 void ADroppedWeapon::AllowPickUp_Implementation(UPrimitiveComponent* OverlappedComponent, 
@@ -49,16 +51,10 @@ void ADroppedWeapon::DisAllowPickUp_Implementation(UPrimitiveComponent* Overlapp
 		PlayerBase->PickUpWeapon = nullptr; 
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "DisAllow Pick Up");
 		//ADroppedWeapon::K2_DestroyActor(); 
-		DestroyWeapon(); 
 	}
 
 	
 	
-}
-
-void ADroppedWeapon::DestroyWeapon_Implementation()
-{
-	Destroy(); 
 }
 
 void ADroppedWeapon::BeginPlay()

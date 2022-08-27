@@ -33,7 +33,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly) 
 	TSubclassOf<UPlayerWidget> PlayerWidgetClass; 
 	
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	UShopScreen * ShopScreen = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)

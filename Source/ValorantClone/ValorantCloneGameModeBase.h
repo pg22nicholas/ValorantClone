@@ -29,9 +29,11 @@ public:
 
 	FTransform GetSpawnPoint(TEAMS teams) const;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess))  
-	TArray<UWeaponData*> AllWeapons;   
-private:
+	UPROPERTY(Replicated, EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess))    
+	TArray<UWeaponData*> AllWeapons;
+	
+private:  
+	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess))
 	TArray<TSubclassOf<AValorantPlayerBase>> PlayerCharacterTypes;
 	

@@ -21,13 +21,13 @@ class VALORANTCLONE_API UShopScreen : public UUserWidget, public  IUserObjectLis
 
 public: 
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget)) 
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, meta=(BindWidget)) 
 	UListView* PrimaryWeapons;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, meta=(BindWidget)) 
 	UListView* SecondaryWeapons;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget)) 
 	UButton* BuyPrimaryWeaponButton;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
@@ -35,7 +35,7 @@ public:
 	
 	virtual  void NativeOnInitialized() override;
 
-	UFUNCTION()
+	UFUNCTION(Server, Reliable)
 	void SetupStore(); 
 
 	UFUNCTION(Server, Reliable)

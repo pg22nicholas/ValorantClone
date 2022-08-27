@@ -4,6 +4,7 @@
 #include "ShopScreen.h"
 #include "Components/Button.h"
 #include "Components/ListView.h"
+#include "Net/UnrealNetwork.h"
 #include "ValorantClone/ValorantCloneGameModeBase.h"
 
 
@@ -14,7 +15,15 @@ void UShopScreen::NativeOnInitialized()
 	SetupStore();  
 }
 
-void UShopScreen::SetupStore() 
+
+void UShopScreen::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UShopScreen, PrimaryWeapons); 
+	DOREPLIFETIME(UShopScreen, SecondaryWeapons); 
+}
+
+void UShopScreen::SetupStore_Implementation()   
 { 
 	UWorld* world = GetWorld();
 

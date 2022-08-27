@@ -37,11 +37,7 @@ public:
 	void DisAllowPickUp(UPrimitiveComponent* OverlappedComp,
 						AActor* OtherActor,
 						UPrimitiveComponent* OtherComp,
-						int32 OtherBodyIndex); 
-
-
-	UFUNCTION(Reliable, Server)
-	void DestroyWeapon(); 
+						int32 OtherBodyIndex);  
 	
 	virtual void BeginPlay() override;
 };

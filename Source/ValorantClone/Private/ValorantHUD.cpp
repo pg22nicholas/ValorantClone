@@ -5,12 +5,14 @@
 #include "ShopScreen.h" 
 #include "PlayerWidget.h"
 #include "Blueprint/UserWidget.h"
-
+#include "Net/UnrealNetwork.h"
 
 
 void AValorantHUD::BeginPlay()
 {
 	Super::BeginPlay(); 
+
+	bReplicates = true; 
 	
 	UWorld * world = GetWorld();
 	if (!world) return;
@@ -35,6 +37,13 @@ void AValorantHUD::DrawHUD()
 {
 	Super::DrawHUD();
 	
+}
+
+
+void AValorantHUD::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AValorantHUD, ShopScreen);  
 }
 
 void AValorantHUD::ToggleStore()

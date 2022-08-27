@@ -19,16 +19,16 @@ class VALORANTCLONE_API UWeaponData : public UDataAsset
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Replicated,EditAnywhere, BlueprintReadWrite, Category="Weapon Data")   
+	int32 WeaponPrice = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
 	UStaticMeshComponent * WeaponMesh;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")  
 	bool PrimaryWeapon = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")
-	int32 WeaponPrice = 0;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite , Category="Weapon Data")   
+	UPROPERTY(Replicated,EditAnywhere, BlueprintReadWrite , Category="Weapon Data")     
 	FText WeaponName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")    
@@ -46,6 +46,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")   
 	bool Automatic = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")   
-	float Rate = 1.0f; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Data")    
+	float Rate = 1.0f;
+
+	
 };

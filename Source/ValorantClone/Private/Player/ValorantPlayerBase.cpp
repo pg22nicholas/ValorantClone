@@ -5,9 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "PlayerWidget.h"
-#include "ValorantHUD.h"
-#include "player/ValorantPlayerStateBase.h"
+#include "PlayerWidget.h" 
 #include "Weapon/WeaponBase.h"
 #include "Weapon/WeaponData.h"
 
@@ -38,6 +36,14 @@ AValorantPlayerBase::AValorantPlayerBase()
 	
 	Weapon = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(MeshArms);
+
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor())) 
+	{
+		if (weaponBase->WeaponData)
+		{
+			CurrentWeapon = weaponBase->WeaponData; 
+		}
+	}
 }
 
 
@@ -58,6 +64,8 @@ void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AValorantPlayerBase, Health); 
+	DOREPLIFETIME(AValorantPlayerBase, CurrentWeapon);
+	
 }
 
 void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -171,7 +179,7 @@ void AValorantPlayerBase::SwitchWeapon_Implementation()
 {
 
 	// Swap Weapons (Secondary and Primary)
-	if (!PrimaryWeapon && SecondaryWeapon) return;
+	if (!PrimaryWeapon ||  !SecondaryWeapon) return; 
 	
 	if (PrimaryWeapon == CurrentWeapon)
 	{
@@ -209,7 +217,7 @@ void AValorantPlayerBase::DropWeapon_Implementation(UWeaponData* WeaponData)
 	FActorSpawnParameters SpawnParams;
 	
 
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Spawned Old Weapon") ;    
+	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Dropped: " + WeaponData->WeaponName.ToString()) ;       
 
 	// Spawn Dropped Weapon on the same place
 	GetWorld()->SpawnActor<ADroppedWeapon>(DroppedWeapon, SpawnTransform, SpawnParams)->WeaponData = WeaponData; 
@@ -220,17 +228,24 @@ void AValorantPlayerBase::DropWeapon_Implementation(UWeaponData* WeaponData)
 void AValorantPlayerBase::AddWeaponToArsenal_Implementation(UWeaponData* WeaponData)  
 {
 	// Equip Purchased Weapon 
-	if (AWeaponBase* WeaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
-	{
-		WeaponBase->WeaponData = WeaponData; 
-	}
+	AWeaponBase* WeaponBase = Cast<AWeaponBase>(Weapon->GetChildActor());
+
+	if (!WeaponBase) return;  
+
+	
+	WeaponBase->WeaponData = WeaponData;
+	CurrentWeapon = WeaponData;
+	
 		
 	// Drop Previous Weapon
 	// Add Weapon to collection
-	if (WeaponData->PrimaryWeapon)
+	if (WeaponData->PrimaryWeapon) 
 	{
 		if (PrimaryWeapon)
+		{
 			DropWeapon(PrimaryWeapon);
+			//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Dropped: " + PrimaryWeapon->WeaponName.ToString()) ;     
+		}
 		PrimaryWeapon = WeaponData;
 	}
 	else
@@ -258,17 +273,7 @@ void AValorantPlayerBase::SetWeaponOnStart_Implementation()
 			SecondaryWeapon = weaponBase->WeaponData;
 			CurrentWeapon = SecondaryWeapon;  
 		}
-
-		if (!CurrentWeapon)
-		{
-			return;
-		}
 		
-		// set HUD values for current weapon 
-		return;
-		PlayerWidget->CurrentProjectilesText->SetText(FText::AsNumber(CurrentWeapon->CurrentProjectileNum));
-		PlayerWidget->MagazineText->SetText(FText::AsNumber(CurrentWeapon->Magazine));
-		PlayerWidget->AllProjectilesText->SetText(FText::AsNumber(CurrentWeapon->AllAmmo));  
 	}
 }
 
@@ -307,7 +312,8 @@ void AValorantPlayerBase::Test_Implementation()
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, "Test");
 
-	Health --; 
+	Health --;
+	Money --; 
 }
 
 void AValorantPlayerBase::MoveForward(float Value)

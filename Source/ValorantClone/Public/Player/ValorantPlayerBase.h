@@ -69,7 +69,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin = -1), Category="Stats" )       
 	int32 Money = 100; 
 
-	UPROPERTY(EditAnywhere ,Category="OwnedWeapons")
+	UPROPERTY(Replicated, EditAnywhere ,Category="OwnedWeapons")
 	UWeaponData* CurrentWeapon;
 
 	UPROPERTY(EditAnywhere, Category="OwnedWeapons")

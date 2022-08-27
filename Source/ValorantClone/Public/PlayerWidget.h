@@ -41,6 +41,9 @@ public:
 	UTextBlock * AllProjectilesText;
 
 	UPROPERTY(meta=(BindWidget))
+	UTextBlock * WeaponNameText;
+
+	UPROPERTY(meta=(BindWidget))
 	UTextBlock * MoneyText;
 
 protected:
@@ -49,6 +52,24 @@ protected:
 
 	UFUNCTION()
 	FText GetPlayerHealth();
+
+	UFUNCTION()
+	FText GetPlayerMaxHealth();
+
+	UFUNCTION()
+	FText GetPlayerMoney();
+
+	UFUNCTION()
+	FText GetWeaponCurrentAmmo();
+
+	UFUNCTION()
+	FText GetWeaponMagazine();
+
+	UFUNCTION()
+	FText GetWeaponAllAmmo();
+
+	UFUNCTION()
+	FText GetWeaponName();
 	
 	
 	
