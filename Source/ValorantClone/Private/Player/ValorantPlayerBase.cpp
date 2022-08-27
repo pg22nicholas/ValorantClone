@@ -220,8 +220,10 @@ void AValorantPlayerBase::DropWeapon_Implementation(UWeaponData* WeaponData)
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Dropped: " + WeaponData->WeaponName.ToString()) ;       
 
 	// Spawn Dropped Weapon on the same place
-	GetWorld()->SpawnActor<ADroppedWeapon>(DroppedWeapon, SpawnTransform, SpawnParams)->WeaponData = WeaponData; 
-	
+	ADroppedWeapon* DropWeapon =   GetWorld()->SpawnActor<ADroppedWeapon>(DroppedWeapon, SpawnTransform, SpawnParams);
+
+	DropWeapon->WeaponData = WeaponData; 
+	 
 }
 
 
@@ -234,7 +236,7 @@ void AValorantPlayerBase::AddWeaponToArsenal_Implementation(UWeaponData* WeaponD
 
 	
 	WeaponBase->WeaponData = WeaponData;
-	CurrentWeapon = WeaponData;
+
 	
 		
 	// Drop Previous Weapon
@@ -254,6 +256,7 @@ void AValorantPlayerBase::AddWeaponToArsenal_Implementation(UWeaponData* WeaponD
 			DropWeapon(SecondaryWeapon); 
 		SecondaryWeapon = WeaponData;
 	}
+	CurrentWeapon = WeaponData; 
 }
 
 void AValorantPlayerBase::SetWeaponOnStart_Implementation() 

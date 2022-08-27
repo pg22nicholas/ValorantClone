@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "Player/ValorantPlayerBase.h"
+#include "Weapon/WeaponData.h"
 
 ADroppedWeapon::ADroppedWeapon()
 {
@@ -35,7 +36,12 @@ void ADroppedWeapon::AllowPickUp_Implementation(UPrimitiveComponent* OverlappedC
 	if (AValorantPlayerBase * PlayerBase = Cast<AValorantPlayerBase>(OtherActor))
 	{
 		PlayerBase->PickUpWeapon = this;
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "Allow Pick Up");  
+		if (WeaponData)
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "Allow Pick Up " + WeaponData->WeaponName.ToString());
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Purple, "no data here " ); 
+		}
 	}
 	
 }

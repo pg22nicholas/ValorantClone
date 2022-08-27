@@ -26,7 +26,7 @@ void UShopScreen::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 void UShopScreen::SetupStore_Implementation()   
 { 
 	UWorld* world = GetWorld();
-
+ 
 	if (!world) return;
 
 	// Listen to Buy buttons clicks
@@ -67,6 +67,9 @@ void UShopScreen::PurchasePrimaryWeapon_Implementation()
 
 	AValorantPlayerBase* PlayerBase = PlayerController->GetPawn<AValorantPlayerBase>();
 	if (!PlayerBase) return;
+
+
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Orange, "jj oko"); 
 	
 	if (UWeaponData* SelectedWeapon = PrimaryWeapons->GetSelectedItem<UWeaponData>())
 	{

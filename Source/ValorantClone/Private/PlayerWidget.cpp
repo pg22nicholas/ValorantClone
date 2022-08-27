@@ -17,6 +17,7 @@ void UPlayerWidget::NativeOnInitialized()
 	MagazineText->TextDelegate.BindDynamic(this, &UPlayerWidget::UPlayerWidget::GetWeaponMagazine);
 	AllProjectilesText->TextDelegate.BindDynamic(this, &UPlayerWidget::GetWeaponAllAmmo);
 	WeaponNameText->TextDelegate.BindDynamic(this, &UPlayerWidget::GetWeaponName);
+
 	
 }
 
