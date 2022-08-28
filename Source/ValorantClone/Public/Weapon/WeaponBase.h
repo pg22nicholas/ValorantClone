@@ -21,6 +21,9 @@ public:
 	// Sets default values for this component's properties
 	AWeaponBase();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<TEnumAsByte<EObjectTypeQuery>> FireTraceObjects;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

@@ -8,6 +8,7 @@
 #include "Weapon/WeaponData.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/HUD.h"
+#include "Kismet/GameplayStatics.h"
 #include "player/ValorantPlayerStateBase.h"
 
 // Sets default values for this component's properties
@@ -34,6 +35,9 @@ AWeaponBase::AWeaponBase()
 
 void AWeaponBase::Fire_Implementation() 
 {
+	UWorld* world = GetWorld();
+	if (!world) return;
+	
 	APawn* instigator = Cast<APawn>(GetParentActor());
 	if (!instigator) return;
 	if (!WeaponData) return;
@@ -49,8 +53,19 @@ void AWeaponBase::Fire_Implementation()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Instigator = instigator;
 	SpawnParams.Owner = instigator;
+
+	FRotator ShotDirection;
+	FHitResult HitResult;
+	if (UKismetSystemLibrary::LineTraceSingleForObjects(world, Barrel->GetComponentLocation(), Barrel->GetComponentLocation() + instigator->GetControlRotation().Vector() * 10000,
+		FireTraceObjects, false, TArray<AActor*>(), EDrawDebugTrace::None, HitResult, true))
+	{
+		ShotDirection = (HitResult.Location - Barrel->GetComponentLocation()).Rotation();
+	} else
+	{
+		ShotDirection = instigator->GetControlRotation();
+	}
 	
-	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,Barrel->GetComponentLocation(), instigator->GetControlRotation(), SpawnParams);
+	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,Barrel->GetComponentLocation() + ShotDirection.Vector() * 50, ShotDirection, SpawnParams);
 
 	if (WeaponData->Automatic && Firing) 
 	{
