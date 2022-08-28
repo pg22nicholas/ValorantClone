@@ -9,31 +9,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fae75055-1e4a-41f6-840e-fe8ded85cccf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ValorantClone/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ValorantClone/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultInput.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultInput.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest_2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_ValorantPlayerBaseTest_2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Settings/BP_ValorantCloneGameModeBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Settings/BP_ValorantCloneGameModeBase.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_AK47.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_AK47.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_CannonWeapon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_CannonWeapon.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Level/LVL_Basic.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Level/LVL_Basic.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerControllerBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerControllerBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Projectile/ExplosiveProjectile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Projectile/ExplosiveProjectile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/ValorantCloneGameState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/ValorantCloneGameState.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/AK47.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/Cannon.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/WeaponBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Weapon/WeaponBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Interfaces/WeaponInterface.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Interfaces/WeaponInterface.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Player/ValorantPlayerBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Player/ValorantPlayerBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Player/ValorantPlayerControllerBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Player/ValorantPlayerControllerBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/ValorantCloneGameState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/ValorantCloneGameState.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/AK47.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/Cannon.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/WeaponBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Public/Weapon/WeaponBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/ValorantClone.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/ValorantClone.Build.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/ValorantCloneGameModeBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/ValorantCloneGameModeBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ValorantClone.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/ValorantClone.uproject" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
