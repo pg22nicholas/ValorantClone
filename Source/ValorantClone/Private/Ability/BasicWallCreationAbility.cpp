@@ -35,7 +35,7 @@ bool ABasicWallCreationAbility::PerformAbility()
 
 	FHitResult HitResult;
 	if (UKismetSystemLibrary::LineTraceSingleForObjects(world, ViewportLocation, EndCast, LineCastType,
-		false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, HitResult, true))
+		false, TArray<AActor*>(), EDrawDebugTrace::None, HitResult, true))
 	{
 		FVector HitLocation = HitResult.Location;
 		FRotator rotation = GetActorRotation();
