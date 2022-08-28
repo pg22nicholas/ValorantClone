@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "Weapon/WeaponData.h"
 #include "ValorantCloneGameModeBase.generated.h"
 
 enum class PLAYABLE_CHARACTERS;
@@ -39,7 +40,8 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void PostLogin(APlayerController* NewPlayer) override;
-
+	
+	
 	TSubclassOf<AValorantPlayerBase> GetPlayerCharacterType(PLAYABLE_CHARACTERS character);
 
 	FTransform GetSpawnPoint(TEAMS teams);

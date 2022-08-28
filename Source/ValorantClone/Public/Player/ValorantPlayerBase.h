@@ -13,10 +13,13 @@
 class UChildActorComponent;
 class AValorantPlayerStateBase;
 class USkillManager;
+class ADroppedWeapon; 
+class UWeaponData;
 
 UCLASS()
 class VALORANTCLONE_API AValorantPlayerBase : public ACharacter, public IDamagingInterface
 {
+	
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
@@ -56,6 +59,27 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USkillManager* SkillManager;
 
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, meta = (ClampMin = -1), Category = "Stats")
+	int32 Money = 100; 
+
+	UPROPERTY(Replicated, EditAnywhere, Category = "OwnedWeapons")
+	UWeaponData* CurrentWeapon;
+
+	UPROPERTY(EditAnywhere, Category = "OwnedWeapons")
+	UWeaponData* PrimaryWeapon;
+
+	UPROPERTY(EditAnywhere, Category = "OwnedWeapons")
+	UWeaponData* SecondaryWeapon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DropWeapon")
+	TSubclassOf<ADroppedWeapon> DroppedWeapon;
+
+	UPROPERTY(EditAnywhere, Category = "DropWeapon")
+	ADroppedWeapon* PickUpWeapon;
+
+	UFUNCTION(Server, Reliable)
+	void BuyWeapon(UWeaponData* WeaponData);
+
 	virtual void OnRep_PlayerState() override;
 
 	TEAMS GetTeam();
@@ -64,6 +88,24 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION(Server, Reliable)
+	void DropWeapon(UWeaponData* WeaponData);
+
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void PickUp();
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void Reload();
+
+	UFUNCTION(Server, Reliable)
+	void SwitchWeapon();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void AddWeaponToArsenal(UWeaponData* WeaponData);
+
+	UFUNCTION(Server, Reliable)
+	void SetWeaponOnStart();
 
 public:	
 
@@ -86,6 +128,9 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void Shoot();
+	
+	UFUNCTION(Server, Reliable)
+	void StopShooting(); 
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);

@@ -7,6 +7,8 @@
 #include "ValorantCloneGameState.generated.h"
 
 class AValorantPlayerBase;
+class UWeaponData; 
+ 
 enum class TEAMS;
 
 namespace ValorantMatchState
@@ -35,6 +37,9 @@ public:
 	UPROPERTY(Replicated)
 	TArray<AValorantPlayerBase*> PlayerCharacters;
 
+	UPROPERTY(Replicated, EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess))    
+	TArray<UWeaponData*> AllWeapons;
+	
 	virtual void SetInProgressMatchState(FName NewInProgressState);
 
 	// getters for player characters to check the state of the game
