@@ -54,18 +54,22 @@ void AWeaponBase::Fire_Implementation()
 	SpawnParams.Instigator = instigator;
 	SpawnParams.Owner = instigator;
 
+	FVector ViewportLocation;
+	FRotator ViewportRotation;
+	instigator->GetController()->GetPlayerViewPoint(OUT ViewportLocation, OUT ViewportRotation);
+	
 	FRotator ShotDirection;
 	FHitResult HitResult;
-	if (UKismetSystemLibrary::LineTraceSingleForObjects(world, Barrel->GetComponentLocation(), Barrel->GetComponentLocation() + instigator->GetControlRotation().Vector() * 10000,
+	if (UKismetSystemLibrary::LineTraceSingleForObjects(world, ViewportLocation + ViewportRotation.Vector() * 50, ViewportLocation + ViewportRotation.Vector() * 10000,
 		FireTraceObjects, false, TArray<AActor*>(), EDrawDebugTrace::None, HitResult, true))
 	{
 		ShotDirection = (HitResult.Location - Barrel->GetComponentLocation()).Rotation();
 	} else
 	{
-		ShotDirection = instigator->GetControlRotation();
+		ShotDirection = ViewportRotation;
 	}
 	
-	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,Barrel->GetComponentLocation() + ShotDirection.Vector() * 50, ShotDirection, SpawnParams);
+	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,Barrel->GetComponentLocation() + instigator->GetControlRotation().Vector() * 50, instigator->GetControlRotation(), SpawnParams);
 
 	if (WeaponData->Automatic && Firing) 
 	{
