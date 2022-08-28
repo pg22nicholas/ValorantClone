@@ -2,13 +2,10 @@
 
 
 #include "Player/ValorantPlayerBase.h"
-
 #include "ValorantCloneGameState.h"
 #include "Ability/SkillManager.h"
-#include "Interfaces/WeaponInterface.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "DamageTypes/BaseDamageType.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameSession.h"
@@ -17,6 +14,8 @@
 #include "Player/ValorantPlayerStateBase.h"
 #include "Weapon/WeaponBase.h"
 #include "ValorantClone/ValorantCloneGameModeBase.h"
+#include "Weapon/DroppedWeapon.h"
+#include "Weapon/WeaponData.h"
 
 // Sets default values
 AValorantPlayerBase::AValorantPlayerBase()
@@ -50,6 +49,7 @@ AValorantPlayerBase::AValorantPlayerBase()
 }
 
 
+
 void AValorantPlayerBase::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
@@ -60,12 +60,175 @@ void AValorantPlayerBase::OnRep_PlayerState()
 	}
 }
 
+void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AValorantPlayerBase, CurrentWeapon);
+	DOREPLIFETIME(AValorantPlayerBase, Money); 
+	DOREPLIFETIME(AValorantPlayerBase, Team); 
+}
+
 // Called when the game starts or when spawned
 void AValorantPlayerBase::BeginPlay()
 {
 	Super::BeginPlay();
 	OnTakePointDamage.AddDynamic(this, &AValorantPlayerBase::SetDamagePoint);
 	OnTakeRadialDamage.AddDynamic(this, &AValorantPlayerBase::SetDamageRadial);
+
+	SetWeaponOnStart(); 
+}
+
+void AValorantPlayerBase::BuyWeapon_Implementation(UWeaponData* WeaponData)
+{
+	// Mo Money case:
+	if (Money < WeaponData->WeaponPrice)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald, "Not Enough Money");
+		return;
+	}
+
+	// Already owned:
+
+	if (PrimaryWeapon == WeaponData || SecondaryWeapon == WeaponData)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald, "Weapon Exists");
+		return;
+	}
+
+
+	// Money decrement
+	Money -= WeaponData->WeaponPrice;
+
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Emerald, "Purchased");
+
+	AddWeaponToArsenal(WeaponData);
+}
+
+void AValorantPlayerBase::DropWeapon_Implementation(UWeaponData* WeaponData)
+{
+
+	if (!DroppedWeapon) return; 
+	
+	// Spawn Parameters for dropped Weapon
+	FTransform SpawnTransform = GetTransform();
+	FActorSpawnParameters SpawnParams;
+
+
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Black, "Dropped: " + WeaponData->WeaponName.ToString());
+
+	// Spawn Dropped Weapon on the same place
+
+	
+	ADroppedWeapon* DropWeapon = GetWorld()->SpawnActor<ADroppedWeapon>(DroppedWeapon, SpawnTransform, SpawnParams);
+	DropWeapon->WeaponData = WeaponData; 
+
+	
+}
+
+void AValorantPlayerBase::PickUp_Implementation()
+{
+	if (!PickUpWeapon) return;
+	if (!PickUpWeapon->WeaponData) return;
+
+
+	// stop if current is the same
+	if (PickUpWeapon->WeaponData == PrimaryWeapon || PickUpWeapon->WeaponData == SecondaryWeapon) return;
+
+	// Add it 
+	AddWeaponToArsenal(PickUpWeapon->WeaponData);
+
+	PickUpWeapon->PickedUp();
+}
+
+void AValorantPlayerBase::Reload_Implementation()
+{
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
+	{
+		weaponBase->Reload(); 
+	}
+}
+
+void AValorantPlayerBase::SwitchWeapon_Implementation()
+{
+	// Swap Weapons (Secondary and Primary)
+	if (!PrimaryWeapon || !SecondaryWeapon) return;
+
+	if (PrimaryWeapon == CurrentWeapon)
+	{
+		CurrentWeapon = SecondaryWeapon;
+	}
+	else CurrentWeapon = PrimaryWeapon;
+
+	if (!CurrentWeapon) return;
+
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, "Switch");
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Magenta, (CurrentWeapon->WeaponName).ToString());
+
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Black, FString::FromInt(Money) + " Money");
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Black, FString::FromInt(CurrentWeapon->CurrentProjectileNum) + " Bullets");
+
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
+	{
+		// set WeaponData on current weapon to new WeaponData 
+		weaponBase->WeaponData = CurrentWeapon;
+
+		weaponBase->Equip();
+	}
+}
+
+void AValorantPlayerBase::AddWeaponToArsenal_Implementation(UWeaponData* WeaponData)
+{
+
+	// Equip Purchased Weapon 
+	AWeaponBase* WeaponBase = Cast<AWeaponBase>(Weapon->GetChildActor());
+
+	if (!WeaponBase) return;
+
+
+	WeaponBase->WeaponData = WeaponData;
+
+
+
+	// Drop Previous Weapon
+	// Add Weapon to collection
+	if (WeaponData->PrimaryWeapon)
+	{
+		if (PrimaryWeapon)
+		{
+			DropWeapon(PrimaryWeapon);
+			//GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, "Dropped: " + PrimaryWeapon->WeaponName.ToString()) ;     
+		}
+		PrimaryWeapon = WeaponData;
+	}
+	else
+	{
+		if (SecondaryWeapon)
+			DropWeapon(SecondaryWeapon);
+		SecondaryWeapon = WeaponData;
+	}
+	CurrentWeapon = WeaponData;
+
+}
+
+void AValorantPlayerBase::SetWeaponOnStart_Implementation()
+{
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
+	{
+		if (!weaponBase->WeaponData) return;
+
+		// Check what is the initial WeaponData on Owning Weapon (Set In Blueprint)
+		if (weaponBase->WeaponData->PrimaryWeapon)
+		{
+			PrimaryWeapon = weaponBase->WeaponData;
+			CurrentWeapon = PrimaryWeapon;
+		}
+		else
+		{
+			SecondaryWeapon = weaponBase->WeaponData;
+			CurrentWeapon = SecondaryWeapon;
+		}
+
+	}
 }
 
 void AValorantPlayerBase::Stun_Implementation(float stunDuration)
@@ -93,7 +256,7 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AValorantPlayerBase::Shoot);
+	//PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AValorantPlayerBase::Shoot);
 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AValorantPlayerBase::MoveForward);
@@ -110,6 +273,13 @@ void AValorantPlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 	PlayerInputComponent->BindAction("Ultimate", IE_Pressed, this, &AValorantPlayerBase::OnUltimatePressed);
 	PlayerInputComponent->BindAction("Ultimate", IE_Released, this, &AValorantPlayerBase::OnUltimateReleased);
+
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AValorantPlayerBase::Shoot);  
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AValorantPlayerBase::StopShooting); 
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AValorantPlayerBase::Reload);  
+	PlayerInputComponent->BindAction("PickUp", IE_Pressed, this, &AValorantPlayerBase::PickUp);
+	
+	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &AValorantPlayerBase::SwitchWeapon);  
 }
 
 void AValorantPlayerBase::SetDamagePoint(AActor* DamagedActor, float Damage,
@@ -197,9 +367,27 @@ void AValorantPlayerBase::Shoot_Implementation()
 	
 	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor()))
 	{
-		weaponBase->Fire(); 
+	
+
+		weaponBase->Firing = true; 
+		weaponBase->Fire();
+		
 	}
 }
+
+void AValorantPlayerBase::StopShooting_Implementation() 
+{
+	
+	if (Weapon == nullptr) return;  
+	
+	if (Weapon->GetClass() == nullptr) return; 
+	
+	if (AWeaponBase* weaponBase = Cast<AWeaponBase>(Weapon->GetChildActor())) 
+	{
+		weaponBase->StopFiring();  
+	}
+}
+
 
 void AValorantPlayerBase::MoveForward(float Value)
 {
@@ -292,11 +480,6 @@ void AValorantPlayerBase::SetTeam(TEAMS team)
 	Team = team;
 }
 
-void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AValorantPlayerBase, Team);
-}
 
 
 

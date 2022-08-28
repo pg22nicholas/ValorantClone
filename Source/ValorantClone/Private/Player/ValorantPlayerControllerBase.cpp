@@ -4,6 +4,7 @@
 #include "player/ValorantPlayerControllerBase.h"
 
 #include "ValorantCloneGameState.h"
+#include "ValorantHUD.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -75,4 +76,26 @@ void AValorantPlayerControllerBase::SER_SetupPlayer_Implementation()
 	}
 	
 	SER_SpawnPlayer();
+}
+
+void AValorantPlayerControllerBase::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	Super::SetupInputComponent();
+
+	if (!InputComponent) return;
+
+	UWorld * world = GetWorld();
+	if (!world) return;
+	 
+	InputComponent->BindAction("Store", IE_Pressed, this, &AValorantPlayerControllerBase::ToggleStore );
+}
+
+void AValorantPlayerControllerBase::ToggleStore()
+{
+	if (AValorantHUD * hud = GetHUD<AValorantHUD>()) 
+	{
+		hud->ToggleStore(); 
+	}
 }

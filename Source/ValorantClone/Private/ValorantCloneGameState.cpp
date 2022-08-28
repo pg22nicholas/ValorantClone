@@ -2,7 +2,7 @@
 
 
 #include "ValorantCloneGameState.h"
-
+#include "Weapon/WeaponData.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "ValorantClone/ValorantCloneGameModeBase.h"
@@ -135,4 +135,5 @@ void AValorantCloneGameState::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AValorantCloneGameState, InProgressMatchState);
 	DOREPLIFETIME(AValorantCloneGameState, PlayerCharacters);
+	DOREPLIFETIME(AValorantCloneGameState, AllWeapons ); 
 }

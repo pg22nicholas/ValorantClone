@@ -10,6 +10,7 @@
 class UStaticMeshComponent;
 class UArrowComponent;
 class USceneComponent;
+class UWeaponData;
 
 UCLASS( Abstract, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VALORANTCLONE_API AWeaponBase : public AActor  
@@ -19,8 +20,6 @@ class VALORANTCLONE_API AWeaponBase : public AActor
 public:	
 	// Sets default values for this component's properties
 	AWeaponBase();
-
-	virtual void Fire() PURE_VIRTUAL(AWeaponBase::Fire, );
 
 protected:
 	// Called when the game starts
@@ -40,6 +39,29 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USceneComponent* Barrel;
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UWeaponData* WeaponData;
+
+	UFUNCTION()
+	void Equip();
+
+	UFUNCTION(Server, Reliable)
+	void Reload();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool Firing;
+
+	UFUNCTION(Server, Reliable)
+	void Fire();
+
+	UFUNCTION(Server, Reliable)
+	void StopFiring();
+		
+	UPROPERTY()
+	FTimerHandle TimerHandle;
 
 	// UFUNCTION(Server, Reliable)
 	// virtual void Reload();

@@ -25,6 +25,11 @@ public:
 
 	TSubclassOf<AValorantPlayerBase> PlayerClassType;
 
+	virtual void SetupInputComponent() override;
+
+	UFUNCTION() 
+	void ToggleStore();
+
 private:
 
 	UPROPERTY()
