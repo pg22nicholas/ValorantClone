@@ -45,16 +45,12 @@ void AWeaponBase::Fire_Implementation()
 	}
 	
 	WeaponData->CurrentProjectileNum --;  
-
-	FTransform SpawnTransform = GetTransform();
-	SpawnTransform.SetLocation(Barrel->GetComponentLocation());
+	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Instigator = instigator;
 	SpawnParams.Owner = instigator;
 	
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Black, SpawnTransform.GetLocation().ToString()) ;    
-	
-	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,SpawnTransform, SpawnParams);
+	GetWorld()->SpawnActor<AActor>(WeaponData->Projectile,Barrel->GetComponentLocation(), instigator->GetControlRotation(), SpawnParams);
 
 	if (WeaponData->Automatic && Firing) 
 	{
