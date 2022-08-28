@@ -8,9 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fae75055-1e4a-41f6-840e-fe8ded85cccf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ValorantClone/Private/Player/ValorantPlayerBase.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="fae75055-1e4a-41f6-840e-fe8ded85cccf" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -264,7 +262,7 @@
       <workItem from="1661189204886" duration="423000" />
       <workItem from="1661642670218" duration="146000" />
       <workItem from="1661669607575" duration="9940000" />
-      <workItem from="1661681323043" duration="312000" />
+      <workItem from="1661681323043" duration="759000" />
     </task>
     <servers />
   </component>
