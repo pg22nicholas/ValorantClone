@@ -53,11 +53,7 @@ AValorantPlayerBase::AValorantPlayerBase()
 void AValorantPlayerBase::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	AValorantPlayerStateBase* ValoPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
-	if (!ValoPlayerState)
-	{
-		ValoPlayerState->Team = Team;
-	}
+	
 }
 
 void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -65,7 +61,6 @@ void AValorantPlayerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AValorantPlayerBase, CurrentWeapon);
 	DOREPLIFETIME(AValorantPlayerBase, Money); 
-	DOREPLIFETIME(AValorantPlayerBase, Team); 
 }
 
 // Called when the game starts or when spawned
@@ -472,12 +467,12 @@ void AValorantPlayerBase::OnUltimateReleased_Implementation()
 
 TEAMS AValorantPlayerBase::GetTeam()
 {
-	return Team;
-}
-
-void AValorantPlayerBase::SetTeam(TEAMS team)
-{
-	Team = team;
+	AValorantPlayerStateBase* ValoPlayerState = Cast<AValorantPlayerStateBase>(GetPlayerState());
+	if (ValoPlayerState)
+	{
+		return ValoPlayerState->Team;
+	}
+	return TEAMS::TEAM_A;
 }
 
 

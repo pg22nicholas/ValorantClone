@@ -172,9 +172,6 @@ private:
 	UPROPERTY()
 	AValorantPlayerStateBase* ValorantPlayerState;
 
-	UPROPERTY(Replicated)
-	TEAMS Team;
-
 	void SetDamage(float Damage, FVector HitLocation, const UDamageType* DamageType, AActor* DamageCauser);
 
 	AValorantCloneGameState* GetValoGameState();
