@@ -195,7 +195,7 @@ void AValorantCloneGameModeBase::BuyPhaseState()
 	if (!world) return;
 
 	// set Buy Phase timer until round starts
-	world->GetTimerManager().SetTimer(BuyPhaseTimerHandle, this, &AValorantCloneGameModeBase::EndBuyingRound, 5, false);
+	world->GetTimerManager().SetTimer(BuyPhaseTimerHandle, this, &AValorantCloneGameModeBase::EndBuyingRound, 10, false);
 }
 
 void AValorantCloneGameModeBase::PlayerDied(AValorantPlayerBase* ValorantPlayer)
